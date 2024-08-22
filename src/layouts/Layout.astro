@@ -1,4 +1,10 @@
 ---
+import Header from '../components/Header.astro';
+import Header2 from '../components/Header2.astro';
+import Nav from '../components/Nav/Nav.jsx';
+import About from '../components/About/about.jsx';
+import Carousel from '../components/Carousel/carousel.jsx';
+
 interface Props {
 	title: string;
 }
@@ -16,8 +22,15 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body>
-		<slot />
+	<body class="bg-black-900 min-h-screen pb-32">
+		<Header  />
+		<Header2 />
+		<Nav />
+		<About client:load/>
+		
+		<main class="max-w5xl px-0.1 m-auto background-color: #1c1c1c; min-height: 100vh; color: white;">
+			<slot />
+		</main>
 	</body>
 </html>
 <style is:global>
@@ -34,17 +47,9 @@ const { title } = Astro.props;
 	}
 	html {
 		font-family: system-ui, sans-serif;
-		background: #13151a;
+		background: #1E1E1E;
+		background-size: 2;
+		color-scheme: dark light;
 	}
-	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
-	}
+
 </style>
