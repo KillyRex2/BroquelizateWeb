@@ -1,3 +1,34 @@
+
+# Broquelízate - Tienda de Joyería y Perforaciones
+
+Este repositorio contiene el código fuente de la página web oficial de **Broquelízate**, una tienda especializada en joyería y perforaciones. Nuestro objetivo es ofrecer una experiencia de compra única, combinando diseños exclusivos de joyas con un servicio profesional de perforaciones.
+
+## Características
+
+- **Catálogo de Productos:** Navega por nuestra selección de joyería de alta calidad, incluyendo aretes, anillos, collares, y más.
+- **Servicio de Perforaciones:** Información detallada sobre nuestro servicio de perforaciones, con opciones para hacer citas y conocer nuestras prácticas de seguridad e higiene.
+- **Carrito de Compras y Pago Seguro:** Funcionalidad completa de e-commerce, con integración de pasarelas de pago seguras.
+- **Blog y Consejos:** Artículos sobre tendencias en joyería, cuidados para nuevas perforaciones, y más.
+
+## Tecnologías
+
+- **Frontend:** Desarrollado con [React/Tailwind/Astro] para una experiencia de usuario fluida y rápida.
+- **Backend:** [Node.js], gestionando la lógica de negocio y la interacción con la base de datos (En desarrollo).
+- **Base de Datos:** Implementación en [MongoDB] para un almacenamiento robusto y escalable (En desarrollo).
+- **Integraciones:** Pasarela de pagos segura mediante [Stripe/PayPal], y manejo de envíos con [DHL/FedEx](En desarollo).
+
+## Instalación
+
+Sigue estos pasos para ejecutar el proyecto localmente:
+
+1. Clona el repositorio:  
+   ```bash
+   git clone https://github.com/usuario/broquelizate.git
+
+
+
+
+
 # Astro Starter Kit: Basics
 
 ```sh
