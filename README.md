@@ -1,5 +1,5 @@
 
-# Broquelízate - Tienda de Joyería y Perforaciones
+![Logo de Broquelízate](https://github.com/KillyRex2/BroquelizateWeb/blob/main/assets/logoB.webp)- Tienda de Joyería y Perforaciones
 
 Este repositorio contiene el código fuente de la página web oficial de **Broquelízate**, una tienda especializada en joyería y perforaciones. Nuestro objetivo es ofrecer una experiencia de compra única, combinando diseños exclusivos de joyas con un servicio profesional de perforaciones.
 
