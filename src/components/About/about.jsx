@@ -21,7 +21,7 @@ const About = () => {
 
     return (
         <section id="about" className="flex flex-col lg:flex-row items-center lg:items-start lg:justify-between py-10">
-            <div className="lg:w-1/2 text-center lg:text-left px-10">
+            <div className="lg:w-1/2 text-center lg:text-left px-5">
                 <h2 className="text-4xl font-bold mb-4 text-gold">Acerca de Nosotros</h2>
                 <p className="mb-6 text-lg leading-relaxed text-gray-300">
                     En Broquelizate, creemos que un accesorio puede ser mucho más que un simple adorno.
@@ -37,30 +37,31 @@ const About = () => {
                 </a>
             </div>
 
-            <div className="relative lg:w-1/2 w-full mt-10 lg:mt-0 px-10 overflow-hidden">
+            {/* Carousel */}
+            <div className="relative lg:w-1/2 w-full mt-5 lg:mt-0 px-5 overflow-hidden">
                 <div
                     className="flex transition-transform duration-500"
-                    style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-                >
+                    style={{ transform: `translateX(-${currentIndex * 100}%)` }} >
                     {images.map((src, index) => (
-                        <div key={index} className="min-w-full h-64 lg:h-96 flex-shrink-0">
+                        <div key={index} className="min-w-full h-64 lg:h-96 flex-shrink-0 flex justify-center items-center">
                             <img
                                 src={src}
                                 alt={`Slide ${index + 1}`}
-                                className="w-full h-full object-cover"
+                                className="w-64 h-64 lg:w-96 lg:h-96 object-cover rounded-lg"  
                             />
                         </div>
                     ))}
                 </div>
 
+                {/* Botones de control */}
                 <button
-                    className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-800 text-white p-2"
+                    className="absolute left-16 top-1/2 transform -translate-y-1/2 z-30 flex h-10 w-10 cursor-pointer items-center justify-center bg-white/30 rounded-full focus:outline-none"
                     onClick={prevSlide}
                 >
                     ❮
                 </button>
                 <button
-                    className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-800 text-white p-2"
+                    className="absolute right-16 top-1/2 transform -translate-y-1/2 z-30 flex h-10 w-10 cursor-pointer items-center justify-center bg-white/30 rounded-full focus:outline-none"
                     onClick={nextSlide}
                 >
                     ❯
