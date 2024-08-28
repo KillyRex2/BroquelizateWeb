@@ -3,59 +3,98 @@ import Header from '../components/Header.astro';
 import Header2 from '../components/Header2.astro';
 import Nav from '../components/Nav/Nav.jsx';
 import About from '../components/About/about.jsx';
-import Products from '../components/Products.astro';
-import Products2 from '../components/Products2.astro';
-import { ViewTransitions } from 'astro:transitions';
 
+import ProductCard from '../components/ProductCard.astro';
 
-interface Props {
-	title: string;
+interface Producto {
+  nombre: string;
+  imagen: string;
+  precio: number;
 }
+
+
+let productos: Producto[] = [];
+
+async function fetchProductos() {
+  try {
+    const response = await fetch('http://localhost:3000/productos');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    productos = await response.json() as Producto[];
+  } catch (error) {
+    console.error('Error fetching products:', error);
+  }
+}
+
+await fetchProductos();
 
 const { title } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</ViewTransition>
-	</head>
-	<body class="bg-black-900 min-h-screen pb-32">
-		<Header  />
-		<Header2 />
-		<Nav />
-		<About client:load/>
-		<Products />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Astro description" />
+  <meta name="viewport" content="width=device-width" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="generator" content={Astro.generator} />
+  <title>{title}</title>
+</head>
+<body class="bg-black-900 min-h-screen pb-32">
+  <Header />
+  <Header2 />
+  <Nav />
+  <About client:load/>
 
-		<Products2 />
-		<main class="max-w5xl px-0.1 m-auto background-color: #1c1c1c; min-height: 100vh; color: white;">
-			<slot />
-		</main>
-	</body>
+  <header class="py-8 px-4 mx-auto max-w-xl lg:py-16 lg:px-2">
+	<div class="flex items-center justify-center">
+	  <!-- Línea izquierda -->
+	  <div class="flex-grow border-t-2 border-yellow-200 mr-3.5"></div>
+  
+	  <!-- Contenedor del texto -->
+	  <div class="flex items-center justify-center">
+		<h1 class="text-3xl font-bold mb-0 text-gold">Productos</h1>
+	  </div>
+  
+	  <!-- Línea derecha -->
+	  <div class="flex-grow border-t-2 border-yellow-200 ml-3.5"></div>
+	</div>
+  </header>
+
+  <div class="flex flex-wrap items-center justify-center  gap-x-8 gap-y-10 ">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {productos.length > 0 ? (
+      productos.map(producto => (
+        <ProductCard producto={producto} />
+      ))
+    ) : (
+      <p class="text-center text-white">No se encontraron productos.</p>
+    )}
+  </div>
+</div>
+  <main class="max-w-5xl px-0.1 m-auto background-color: #1c1c1c; min-height: 100vh; color: white;">
+    <slot />
+  </main>
+</body>
 </html>
 <style is:global>
-	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background: #1E1E1E;
-		background-size: 2;
-		color-scheme: dark light;
-	}
-
+  :root {
+    --accent: 136, 58, 234;
+    --accent-light: 224, 204, 250;
+    --accent-dark: 49, 10, 101;
+    --accent-gradient: linear-gradient(
+      45deg,
+      rgb(var(--accent)),
+      rgb(var(--accent-light)) 30%,
+      white 60%
+    );
+  }
+  html {
+    font-family: system-ui, sans-serif;
+    background: #1E1E1E;
+    background-size: 2;
+    color-scheme: dark light;
+  }
 </style>
