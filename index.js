@@ -90,6 +90,17 @@ app.delete('/productos/:id', async (req, res) => {
   }
 });
 
+app.get('/productos', async (req, res) => {
+  try {
+    const { categoria } = req.query;
+    const query = categoria ? { categoria } : {};
+    const productos = await Producto.find(query);
+    res.json(productos);
+  } catch (error) {
+    res.status(500).send('Error obteniendo los productos');
+  }
+});
+
 
 
 // Iniciar el servidor

@@ -3,6 +3,7 @@ interface Producto {
   nombre: string;
   imagen: string;
   precio: number;
+  categoria: string;
 }
 
 interface ProductCardProps {
@@ -10,15 +11,15 @@ interface ProductCardProps {
 }
 
 const { producto } = Astro.props as ProductCardProps;
-const { nombre, imagen, precio } = producto;
+const { nombre, imagen, precio, categoria } = producto;
 ---
 
 
 
-<div class="flex flex-wrap items-center justify-center  gap-x-8 gap-y-10">
-<div class="relative flex w-80 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
+<div class="flex flex-wrap items-center justify-center  gap-x-8 gap-y-12">
+<div class="relative flex w-80 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md hover:scale-110 duration-500 transition-transform img mb-0">
   <div
-    class="relative mx-4 -mt-6 h-40 overflow-hidden rounded-xl bg-clip-border text-white shadow-lg"
+    class="relative mx-4 -mt-6 h-40 overflow-hidden rounded-xl bg-clip-border text-white shadow-lg "
     style={`background-image: url('${imagen}'); background-size: cover; background-position: center;`}
   ></div>
   <div class="p-6">
@@ -27,6 +28,9 @@ const { nombre, imagen, precio } = producto;
     </h5>
     <p class="block font-sans text-base leading-relaxed text-inherit antialiased">
       ${precio.toFixed(2)}
+    </p>
+    <p class="block font-sans text-bold leading-relaxed text-inherit antialiased">
+      {categoria}
     </p>
   </div>
   <div class="p-6 pt-0">
