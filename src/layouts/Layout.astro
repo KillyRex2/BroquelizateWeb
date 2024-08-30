@@ -4,39 +4,7 @@ import Header2 from '../components/Header2.astro';
 import Nav from '../components/Nav/Nav.jsx';
 import About from '../components/About/about.jsx';
 import Products2 from '../components/Products2.astro';
-import Swiper from 'swiper';
-import { Navigation, Pagination } from 'swiper/modules';
-
-// Configura Swiper para usar los módulos que necesitas
-Swiper.use([Navigation, Pagination]);
-
-
-interface Producto {
-  nombre: string;
-  imagen: string;
-  precio: number;
-  categoria: string;
-}
-
-
-let productos: Producto[] = [];
-
-async function fetchProductos() {
-  try {
-    const response = await fetch('http://localhost:3000/productos');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    productos = await response.json() as Producto[];
-  } catch (error) {
-    console.error('Error fetching products:', error);
-  }
-}
-
-await fetchProductos();
-
-// Filtrar productos:
-
+import Swiper from '../components/SwiperComponent/ProductosSwiper.jsx';
 
 
 const { title } = Astro.props;
@@ -60,7 +28,7 @@ const { title } = Astro.props;
   <Header2 />
   <Nav />
   <About client:load/>
-  <Products2 />
+
   <header class="py-8 px-4 mx-auto max-w-xl lg:py-16 lg:px-2">
 	<div class="flex items-center justify-center">
 	  <!-- Línea izquierda -->
@@ -99,54 +67,10 @@ const { title } = Astro.props;
    <div class="flex-grow border-t-2 border-yellow-200 ml-4"></div>
 	</div>
   </header>
-  <div class="flex items-center justify-center pb-14">
-	<div class="radio-inputs">
-	  <label class="radio">
-		<input type="radio" name="radio" id="oro10k" value="Oro 10K" checked>
-		<span class="name">Oro 10K</span>
-	  </label>
-	  <label class="radio">
-		<input type="radio" name="radio" id="oro14k" value="Oro 14K">
-		<span class="name">Oro 14K</span>
-	  </label>
-	  <label class="radio">
-		<input type="radio" name="radio" id="oro18k" value="Oro 18K">
-		<span class="name">Oro 18K</span>
-	  </label>
-	  <label class="radio">
-		<input type="radio" name="radio" id="titanio" value="Titanio">
-		<span class="name">Titanio</span>
-	  </label>
-	  <label class="radio">
-		<input type="radio" name="radio" id="acero" value="Acero Quirúrgico">
-		<span class="name">Acero Quirúrgico</span>
-	  </label>
-	  <label class="radio">
-		<input type="radio" name="radio" id="chapa18k" value="Chapa 18K">
-		<span class="name">Chapa 18K</span>
-	  </label>
-	  <label class="radio">
-		<input type="radio" name="radio" id="rodio" value="Rodio">
-		<span class="name">Rodio</span>
-	  </label>
-	</div>
-  </div>
-  
 
-  <div class="relative">
-	<!-- Contenedor del carrusel -->
-	<div class="product-container flex gap-6 overflow-x-auto scrollbar-hide">
-	  <!-- Las tarjetas de producto se añadirán aquí con JavaScript -->
-	</div>
-  
-	<!-- Botones de desplazamiento -->
-	<button id="prevButton" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">
-	  &#9664;
-	</button>
-	<button id="nextButton" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">
-	  &#9654;
-	</button>
-  </div>
+
+  <Swiper client:load />
+
   <main class="max-w-5xl px-0.1 m-auto background-color: #1c1c1c; min-height: 100vh; color: white;">
     <slot />
   </main>
@@ -243,98 +167,5 @@ const { title } = Astro.props;
 
 
 
-<script type="module">
-let lastFetchedCategory = null; // To store the last fetched category
 
-async function fetchFilteredProducts(categoria) {
-  // If the category hasn't changed, don't fetch
-  if (categoria === lastFetchedCategory) {
-    console.log(`Category hasn't changed: ${categoria}. Skipping fetch.`);
-    return;
-  }
-
-  // Update the last fetched category
-  lastFetchedCategory = categoria;
-
-  try {
-    console.log(`Fetching products for category: ${categoria}`); // Debugging log
-    const response = await fetch(`http://localhost:3000/productos?categoria=${encodeURIComponent(categoria)}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const productos = await response.json();
-    console.log(`Fetched products:`, productos); // Debugging log
-    renderProducts(productos);
-  } catch (error) {
-    console.error('Error fetching products:', error);
-  }
-}
-
-// Render de los productos
-
-	function renderProducts(productos) {
-	  const productContainer = document.querySelector('.product-container');
-	  if (!productContainer) {
-		console.warn('Product container not found'); // Debugging log
-		return;
-	  }
-  
-	  productContainer.innerHTML = '';
-  
-	  productos.forEach(producto => {
-	const productCard = `
-		<div class="relative flex flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md hover:scale-110 duration-500 transition-transform img w-full max-w-xs">
-			<div class="relative mx-4 -mt-6 h-40 overflow-hidden rounded-xl bg-clip-border text-white shadow-lg"
-				style="background-image: url('${producto.imagen}'); background-size: cover; background-position: center;">
-			</div>
-			<div class="p-6">
-				<h5 class="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-					${producto.nombre}
-				</h5>
-				<p class="block font-sans text-base leading-relaxed text-inherit antialiased">
-					$${producto.precio.toFixed(2)}
-				</p>
-				<p class="block font-sans text-bold leading-relaxed text-inherit antialiased">
-					${producto.categoria}
-				</p>
-			</div>
-			<div class="p-6 pt-0">
-				<button
-					data-ripple-light="true"
-					type="button"
-					class="select-none rounded-lg bg-black py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-black/20 transition-all hover:shadow-lg hover:shadow-black/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
-					Ver más.
-				</button>
-			</div>
-		</div>
-	`;
-	productContainer.innerHTML += productCard;
-});
-
-	}
-  
-	document.addEventListener('DOMContentLoaded', () => {
-	  const radioButtons = document.querySelectorAll('input[name="radio"]');
-	  
-	  radioButtons.forEach(radio => {
-		radio.addEventListener('change', (event) => {
-		  const selectedCategory = event.target.value;
-		  console.log(`Radio button changed to category: ${selectedCategory}`); // Debugging log
-		  fetchFilteredProducts(selectedCategory);
-		});
-	  });
-  
-	  // Optionally, trigger the initial fetch with the default selected radio button
-	  const defaultRadio = document.querySelector('input[name="radio"]:checked');
-	  if (defaultRadio) {
-		const defaultCategory = defaultRadio.value;
-		console.log(`Default category on page load: ${defaultCategory}`); // Debugging log
-		fetchFilteredProducts(defaultCategory);
-	  } else {
-		console.warn('No default radio button is selected'); // Debugging log
-	  }
-	});
-
-	
-  </script>
   
