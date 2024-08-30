@@ -3,13 +3,19 @@ import Header from '../components/Header.astro';
 import Header2 from '../components/Header2.astro';
 import Nav from '../components/Nav/Nav.jsx';
 import About from '../components/About/about.jsx';
+import Products2 from '../components/Products2.astro';
+import Swiper from 'swiper';
+import { Navigation, Pagination } from 'swiper/modules';
 
-import ProductCard from '../components/ProductCard.astro';
+// Configura Swiper para usar los módulos que necesitas
+Swiper.use([Navigation, Pagination]);
+
 
 interface Producto {
   nombre: string;
   imagen: string;
   precio: number;
+  categoria: string;
 }
 
 
@@ -29,8 +35,15 @@ async function fetchProductos() {
 
 await fetchProductos();
 
+// Filtrar productos:
+
+
+
 const { title } = Astro.props;
 ---
+
+
+
 
 <!doctype html>
 <html lang="en">
@@ -47,33 +60,93 @@ const { title } = Astro.props;
   <Header2 />
   <Nav />
   <About client:load/>
-
+  <Products2 />
   <header class="py-8 px-4 mx-auto max-w-xl lg:py-16 lg:px-2">
 	<div class="flex items-center justify-center">
 	  <!-- Línea izquierda -->
-	  <div class="flex-grow border-t-2 border-yellow-200 mr-3.5"></div>
+	  <div class="flex-grow border-t-2 border-yellow-200 mr-4"></div>
   
 	  <!-- Contenedor del texto -->
-	  <div class="flex items-center justify-center">
-		<h1 class="text-3xl font-bold mb-0 text-gold">Productos</h1>
+	  <div class="flex items-center justify-center ">
+		<h1 class="text-3xl font-bold mb-0 text-gold mr-2">Productos</h1>
+		
+<div
+  class="p-5 overflow-hidden w-[60px] h-[60px] hover:w-[270px] bg-[#000] shadow-[2px_2px_20px_rgba(0,0,0,0.08)] rounded-full flex group items-center hover:duration-300 duration-300"
+>
+  <div class="flex items-center justify-center fill-white">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      id="Isolation_Mode"
+      data-name="Isolation Mode"
+      viewBox="0 0 24 24"
+      width="22"
+      height="22"
+    >
+      <path
+        d="M18.9,16.776A10.539,10.539,0,1,0,16.776,18.9l5.1,5.1L24,21.88ZM10.5,18A7.5,7.5,0,1,1,18,10.5,7.507,7.507,0,0,1,10.5,18Z"
+      ></path>
+    </svg>
+  </div>
+  <input
+    type="text"
+    class="outline-none text-[20px] bg-transparent w-full text-white font-normal px-4"
+  />
+</div>
+
 	  </div>
   
 	  <!-- Línea derecha -->
-	  <div class="flex-grow border-t-2 border-yellow-200 ml-3.5"></div>
+   <div class="flex-grow border-t-2 border-yellow-200 ml-4"></div>
 	</div>
   </header>
-
-  <div class="flex flex-wrap items-center justify-center  gap-x-8 gap-y-14 ">
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-    {productos.length > 0 ? (
-      productos.map(producto => (
-        <ProductCard producto={producto} />
-      ))
-    ) : (
-      <p class="text-center text-white">No se encontraron productos.</p>
-    )}
+  <div class="flex items-center justify-center pb-14">
+	<div class="radio-inputs">
+	  <label class="radio">
+		<input type="radio" name="radio" id="oro10k" value="Oro 10K" checked>
+		<span class="name">Oro 10K</span>
+	  </label>
+	  <label class="radio">
+		<input type="radio" name="radio" id="oro14k" value="Oro 14K">
+		<span class="name">Oro 14K</span>
+	  </label>
+	  <label class="radio">
+		<input type="radio" name="radio" id="oro18k" value="Oro 18K">
+		<span class="name">Oro 18K</span>
+	  </label>
+	  <label class="radio">
+		<input type="radio" name="radio" id="titanio" value="Titanio">
+		<span class="name">Titanio</span>
+	  </label>
+	  <label class="radio">
+		<input type="radio" name="radio" id="acero" value="Acero Quirúrgico">
+		<span class="name">Acero Quirúrgico</span>
+	  </label>
+	  <label class="radio">
+		<input type="radio" name="radio" id="chapa18k" value="Chapa 18K">
+		<span class="name">Chapa 18K</span>
+	  </label>
+	  <label class="radio">
+		<input type="radio" name="radio" id="rodio" value="Rodio">
+		<span class="name">Rodio</span>
+	  </label>
+	</div>
   </div>
-</div>
+  
+
+  <div class="relative">
+	<!-- Contenedor del carrusel -->
+	<div class="product-container flex gap-6 overflow-x-auto scrollbar-hide">
+	  <!-- Las tarjetas de producto se añadirán aquí con JavaScript -->
+	</div>
+  
+	<!-- Botones de desplazamiento -->
+	<button id="prevButton" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">
+	  &#9664;
+	</button>
+	<button id="nextButton" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">
+	  &#9654;
+	</button>
+  </div>
   <main class="max-w-5xl px-0.1 m-auto background-color: #1c1c1c; min-height: 100vh; color: white;">
     <slot />
   </main>
@@ -97,4 +170,171 @@ const { title } = Astro.props;
     background-size: 2;
     color-scheme: dark light;
   }
+
+
+
+.radio-inputs {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 0.5rem;
+  background-color: #EEE;
+  box-sizing: border-box;
+  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+  padding: 0.25rem;
+  width: 600px; /* Aumenta el ancho para que sea más alargado */
+  font-size: 14px;
+}
+
+.radio-inputs .radio {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+.radio-inputs .radio input {
+  display: none;
+}
+
+.radio-inputs .radio .name {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: none;
+  padding: .5rem 0;
+  color: rgba(51, 65, 85, 1);
+  transition: all .15s ease-in-out;
+}
+
+.radio-inputs .radio input:checked + .name {
+  background-color: #fff;
+  font-weight: 600;
+}
+
+.product-container {
+    display: flex;
+    flex-wrap: nowrap; /* Para que las tarjetas no se envuelvan en una nueva línea */
+    gap: 20px;
+    padding: 20px;
+    overflow-x: auto; /* Para permitir el desplazamiento horizontal si las tarjetas exceden el ancho de la pantalla */
+}
+
+.product-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 250px; /* Puedes ajustar este valor para el tamaño de la tarjeta */
+    max-width: 250px; /* Para asegurarte de que las tarjetas sean uniformes */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 </style>
+
+
+
+<script type="module">
+let lastFetchedCategory = null; // To store the last fetched category
+
+async function fetchFilteredProducts(categoria) {
+  // If the category hasn't changed, don't fetch
+  if (categoria === lastFetchedCategory) {
+    console.log(`Category hasn't changed: ${categoria}. Skipping fetch.`);
+    return;
+  }
+
+  // Update the last fetched category
+  lastFetchedCategory = categoria;
+
+  try {
+    console.log(`Fetching products for category: ${categoria}`); // Debugging log
+    const response = await fetch(`http://localhost:3000/productos?categoria=${encodeURIComponent(categoria)}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const productos = await response.json();
+    console.log(`Fetched products:`, productos); // Debugging log
+    renderProducts(productos);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+  }
+}
+
+// Render de los productos
+
+	function renderProducts(productos) {
+	  const productContainer = document.querySelector('.product-container');
+	  if (!productContainer) {
+		console.warn('Product container not found'); // Debugging log
+		return;
+	  }
+  
+	  productContainer.innerHTML = '';
+  
+	  productos.forEach(producto => {
+	const productCard = `
+		<div class="relative flex flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md hover:scale-110 duration-500 transition-transform img w-full max-w-xs">
+			<div class="relative mx-4 -mt-6 h-40 overflow-hidden rounded-xl bg-clip-border text-white shadow-lg"
+				style="background-image: url('${producto.imagen}'); background-size: cover; background-position: center;">
+			</div>
+			<div class="p-6">
+				<h5 class="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
+					${producto.nombre}
+				</h5>
+				<p class="block font-sans text-base leading-relaxed text-inherit antialiased">
+					$${producto.precio.toFixed(2)}
+				</p>
+				<p class="block font-sans text-bold leading-relaxed text-inherit antialiased">
+					${producto.categoria}
+				</p>
+			</div>
+			<div class="p-6 pt-0">
+				<button
+					data-ripple-light="true"
+					type="button"
+					class="select-none rounded-lg bg-black py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-black/20 transition-all hover:shadow-lg hover:shadow-black/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
+					Ver más.
+				</button>
+			</div>
+		</div>
+	`;
+	productContainer.innerHTML += productCard;
+});
+
+	}
+  
+	document.addEventListener('DOMContentLoaded', () => {
+	  const radioButtons = document.querySelectorAll('input[name="radio"]');
+	  
+	  radioButtons.forEach(radio => {
+		radio.addEventListener('change', (event) => {
+		  const selectedCategory = event.target.value;
+		  console.log(`Radio button changed to category: ${selectedCategory}`); // Debugging log
+		  fetchFilteredProducts(selectedCategory);
+		});
+	  });
+  
+	  // Optionally, trigger the initial fetch with the default selected radio button
+	  const defaultRadio = document.querySelector('input[name="radio"]:checked');
+	  if (defaultRadio) {
+		const defaultCategory = defaultRadio.value;
+		console.log(`Default category on page load: ${defaultCategory}`); // Debugging log
+		fetchFilteredProducts(defaultCategory);
+	  } else {
+		console.warn('No default radio button is selected'); // Debugging log
+	  }
+	});
+
+	
+  </script>
+  

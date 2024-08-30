@@ -31,14 +31,14 @@ const broquelSchema = new mongoose.Schema({
 const Producto = mongoose.model('Producto', broquelSchema);
 
 // Endpoint para obtener los productos
-app.get('/productos', async (req, res) => {
-  try {
-    const productos = await Producto.find();
-    res.json(productos);
-  } catch (error) {
-    res.status(500).send('Error obteniendo los productos');
-  }
-});
+// app.get('/productos', async (req, res) => {
+//   try {
+//     const productos = await Producto.find();
+//     res.json(productos);
+//   } catch (error) {
+//     res.status(500).send('Error obteniendo los productos');
+//   }
+// });
 
 // Endpoint para crear un nuevo producto
 app.post('/productos', async (req, res) => {
@@ -93,15 +93,24 @@ app.delete('/productos/:id', async (req, res) => {
 app.get('/productos', async (req, res) => {
   try {
     const { categoria } = req.query;
-    const query = categoria ? { categoria } : {};
+
+    // Log the received category for debugging
+    console.log('Category received:', categoria);
+
+    // Ajuste aquí: Usa el modelo "Producto"
+    const query = categoria ? { categoria: new RegExp(`^${categoria}$`, 'i') } : {};
+
     const productos = await Producto.find(query);
+
+    // Log the filtered products for debugging
+    console.log('Filtered products:', productos);
+
     res.json(productos);
   } catch (error) {
-    res.status(500).send('Error obteniendo los productos');
+    console.error('Error fetching products:', error);
+    res.status(500).send('Server Error');
   }
 });
-
-
 
 // Iniciar el servidor
 app.listen(port, () => {
