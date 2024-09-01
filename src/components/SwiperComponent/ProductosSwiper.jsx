@@ -95,7 +95,7 @@ const ProductosSwiper = () => {
                 }}
               />
               <div className="p-6">
-                <h5 className="mb-2 block text-xl font-semibold leading-snug tracking-normal text-blue-gray-900">
+                <h5 className="mb-2 block text-lg font-semibold leading-snug tracking-normal text-blue-gray-900">
                   {producto.nombre}
                 </h5>
                 <p className="block text-base leading-relaxed text-inherit">
