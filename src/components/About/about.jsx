@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const About = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -11,19 +11,46 @@ const About = () => {
         '/assets/promos.webp',
     ];
 
+    // Función para avanzar al siguiente slide
     const nextSlide = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     };
 
+    // Función para retroceder al slide anterior
     const prevSlide = () => {
         setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
     };
 
+    // Efecto para cambiar la imagen automáticamente
+    useEffect(() => {
+        const interval = setInterval(() => {
+            nextSlide();
+        }, 4000); // Cambia la imagen cada 3 segundos
+
+        // Limpia el intervalo cuando el componente se desmonta
+        return () => clearInterval(interval);
+    }, []);
+
     return (
-        <section id="about" className="flex flex-col lg:flex-row items-center lg:items-start lg:justify-between py-10">
+        <section id="about" className="flex flex-col lg:flex-row items-center lg:items-start lg:justify-between py-28">
             <div className="lg:w-1/2 text-center lg:text-left px-5">
-                <h2 className="text-4xl font-bold mb-4 text-gold">Acerca de Nosotros</h2>
-                <p className="mb-6 text-lg leading-relaxed text-gray-300">
+                
+
+            <div>
+                <header >
+                    <div class="flex items-center justify-center">
+                    <div class="flex items-center justify-center ">
+                        <h1 class="text-4xl font-bold mb-4 text-gold">Acerca de Nosotros</h1>
+                    </div>
+                
+                    <div class="flex-grow border-t-2 border-yellow-200 ml-4"></div>
+                    </div>
+                </header>
+            </div>
+                
+              
+                
+                <p className="mb-6 text-lg leading-relaxed text-withe">
                     En Broquelizate, creemos que un accesorio puede ser mucho más que un simple adorno.
                     Desde elegantes aretes hasta piercings únicos, estamos dedicados a ofrecerte productos de la
                     más alta calidad que reflejen tu estilo y personalidad.
@@ -32,7 +59,7 @@ const About = () => {
                     Con años de experiencia en la industria, nuestro equipo de expertos está aquí para ayudarte a encontrar
                     el complemento perfecto que te haga sentir única y especial. Visítanos y descubre nuestra amplia colección.
                 </p>
-                <a href="/contact" className="inline-block px-6 py-3 border border-gold text-gold font-semibold rounded hover:bg-gold hover:text-black transition duration-300">
+                <a href="#contact" className="inline-block px-6 py-3 border border-gold text-gold font-semibold rounded hover:bg-gold  hover:bg-yellow-500  transition duration-300">
                     Contáctanos
                 </a>
             </div>
