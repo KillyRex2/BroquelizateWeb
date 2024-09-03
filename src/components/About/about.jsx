@@ -38,12 +38,12 @@ const About = () => {
 
             <div>
                 <header >
-                    <div class="flex items-center justify-center">
-                    <div class="flex items-center justify-center ">
-                        <h1 class="text-4xl font-bold mb-4 text-gold">Acerca de Nosotros</h1>
+                    <div className="flex items-center justify-center">
+                    <div className="flex items-center justify-center ">
+                        <h1 className="text-4xl font-bold mb-4 text-gold">Acerca de Nosotros</h1>
                     </div>
                 
-                    <div class="flex-grow border-t-2 border-yellow-200 ml-4"></div>
+                    <div className="flex-grow border-t-2 border-yellow-200 ml-4"></div>
                     </div>
                 </header>
             </div>
