@@ -7,6 +7,7 @@ import Swiper from '../components/SwiperComponent/ProductosSwiper.jsx';
 import Servicios from '../components/Servicios.astro';
 import Contacto from '../components/Contacto.astro';
 import Footer from '../components/Footer.astro';
+import Cart from '../components/Cart/Cart.jsx';
 
 const { title } = Astro.props;
 ---
@@ -25,6 +26,7 @@ const { title } = Astro.props;
   <Header />
   <Header2 />
   <Nav />
+  <Cart />
   <main class="flex-grow">
     <About client:load/>
 
@@ -135,11 +137,6 @@ const { title } = Astro.props;
   }
 
   
-  .footer{
-    margin-top: auto;
-  }
-  body{
-    display: flex;
-    flex-direction: column;
-  }
+
+  
 </style>

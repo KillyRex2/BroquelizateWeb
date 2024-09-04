@@ -1,0 +1,34 @@
+#floating-cart {
+    position: fixed; /* Fija el botón en la pantalla */
+    top: 50%; /* Centrado verticalmente */
+    right: 20px; /* Alineado a la derecha */
+    transform: translateY(-50%); /* Ajusta la posición vertical para centrar */
+    width: 50px; /* Ancho del botón */
+    height: 50px; /* Altura del botón */
+    background: rgba(0, 0, 0, 0.3); /* Fondo negro semitransparente */
+    color: var(--color-light); /* Color del ícono */
+    border-radius: 50%; /* Botón circular */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    backdrop-filter: blur(15px); /* Aplica el efecto de desenfoque */
+  }
+  
+  #floating-cart:hover {
+    background: rgba(250, 246, 36, 0.3); /* Efecto hover */
+  }
+  
+  #cart-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red; /* Fondo rojo del contador */
+    color: white; /* Color del texto */
+    border-radius: 50%; /* Redondeado */
+    padding: 2px 5px;
+    font-size: 12px;
+  }
+  
