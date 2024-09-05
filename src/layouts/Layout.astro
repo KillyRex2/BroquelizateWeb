@@ -8,6 +8,7 @@ import Servicios from '../components/Servicios.astro';
 import Contacto from '../components/Contacto.astro';
 import Footer from '../components/Footer.astro';
 import Cart from '../components/Cart/Cart.jsx';
+import CartComponent from '../components/Cart/CartComponent';
 
 const { title } = Astro.props;
 ---
@@ -26,7 +27,7 @@ const { title } = Astro.props;
   <Header />
   <Header2 />
   <Nav />
-  <Cart />
+  
   <main class="flex-grow">
     <About client:load/>
 
@@ -45,7 +46,7 @@ const { title } = Astro.props;
       </div>
     </header>
 
-    <Swiper client:load />
+    <CartComponent client:load />
     <Servicios />
     <Contacto />
   </main>
