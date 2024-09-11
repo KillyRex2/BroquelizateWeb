@@ -2,25 +2,25 @@ import React, { useState, useEffect } from 'react';
 import Swiper from 'swiper';
 import 'swiper/swiper-bundle.css';
 import './ProductosSwiper.css';
+import Cart from '../Cart/Cart.jsx';  // Asegúrate de importar el componente Cart
 
 const ProductosSwiper = ({ cartCount, setCartCount }) => {
   const [productos, setProductos] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('Oro 10K');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
-  const [selectedProducts, setSelectedProducts] = useState([]); // Almacena productos seleccionados
+  const [selectedProducts, setSelectedProducts] = useState([]); 
 
   let lastFetchedCategory = null;
 
   const handleSelection = (index) => {
     if (selectedProducts.includes(index)) {
-      // Si ya está seleccionado, lo removemos y disminuimos el contador
       setSelectedProducts(selectedProducts.filter((i) => i !== index));
-      setCartCount(cartCount - 1); // Restar del contador
+      setCartCount(cartCount - 1);
     } else {
-      // Si no está seleccionado, lo añadimos e incrementamos el contador
       setSelectedProducts([...selectedProducts, index]);
-      setCartCount(cartCount + 1); // Sumar al contador
+      setCartCount(cartCount + 1);
     }
   };
 
@@ -39,7 +39,7 @@ const ProductosSwiper = ({ cartCount, setCartCount }) => {
       }
       const data = await response.json();
       setProductos(data);
-      setSelectedProducts([]); // Reinicia la selección cuando cambias de categoría
+      setSelectedProducts([]); 
     } catch (error) {
       console.error('Error al cargar los productos:', error);
     }
@@ -77,12 +77,13 @@ const ProductosSwiper = ({ cartCount, setCartCount }) => {
           clickable: true,
         },
       });
-      swiper.update(); // Actualiza Swiper para reflejar los cambios en la UI
+      swiper.update(); 
     }
   }, [productos]);
 
   return (
     <div>
+      <Cart cartCount={cartCount} selectedProducts={selectedProducts} setIsModalOpen={setIsCartModalOpen} />
       <div className="flex items-center justify-center pb-14">
         <div className="radio-inputs">
           {['Oro 10K', 'Oro 14K', 'Oro 18K', 'Titanio', 'Acero Quirúrgico', 'Chapa 18K', 'Rodio'].map((categoria) => (
@@ -128,7 +129,7 @@ const ProductosSwiper = ({ cartCount, setCartCount }) => {
                   className="rounded-lg bg-black py-3 px-6 text-center text-xs font-bold uppercase text-white shadow-md transition-all duration-300 hover:bg-yellow-500 hover:text-black"
                   onClick={() => {
                     setProductoSeleccionado(producto);
-                    setIsModalOpen(true);
+                    setIsProductModalOpen(true);
                   }}
                 >
                   Ver más
@@ -146,7 +147,7 @@ const ProductosSwiper = ({ cartCount, setCartCount }) => {
                     viewBox="0 0 576 512"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"></path>
+                    <path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM160 448c0-26.5 21.5-48 48-48s48 21.5 48 48-21.5 48-48 48-48-21.5-48-48zm320 0c0 26.5-21.5 48-48 48s-48-21.5-48-48 21.5-48 48-48 48 21.5 48 48z" />
                   </svg>
                 </button>
               </div>
@@ -156,8 +157,53 @@ const ProductosSwiper = ({ cartCount, setCartCount }) => {
 
         <div className="swiper-pagination"></div>
       </div>
-{/* Modal */}
-{isModalOpen && (
+
+{isCartModalOpen && (
+  <div className="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full flex justify-center items-center">
+    <div className="modal-content relative bg-white p-6 rounded-lg shadow-lg">
+      <button
+        type="button"
+        onClick={() => setIsCartModalOpen(false)}
+        className="absolute top-4 right-4 text-gray-400 bg-transparent hover:bg-gray-800 hover:text-gray-300 rounded-lg text-sm p-1.5 inline-flex items-center"
+      >
+        <svg
+          className="w-5 h-5"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fillRule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </button>
+      <h2>Productos seleccionados</h2>
+      <ul>
+        {selectedProducts.map((index) => (
+          <li key={index}>
+            <img src={productos[index].imagen} alt={productos[index].nombre} />
+            <p>{productos[index].nombre}</p>
+            <p>${productos[index].precio.toFixed(2)}</p>
+          </li>
+        ))}
+      </ul>
+      <div className="footer">
+        <span className="price">
+          Total: $
+          {selectedProducts.reduce((total, index) => total + productos[index].precio, 0).toFixed(2)}
+        </span>
+        <button className="checkout-btn">Checkout</button>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
+      {/* Modal para ver más detalles de un producto */}
+{isProductModalOpen && (
   <div
     id="defaultModal"
     tabIndex="-1"
@@ -172,7 +218,7 @@ const ProductosSwiper = ({ cartCount, setCartCount }) => {
           </h3>
           <button
             type="button"
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => setIsProductModalOpen(false)}  // Cambiado aquí
             className="text-gray-400 bg-transparent hover:bg-gray-800 hover:text-gray-300 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
             data-modal-hide="defaultModal"
           >
@@ -209,7 +255,7 @@ const ProductosSwiper = ({ cartCount, setCartCount }) => {
         </div>
         <div className="flex items-center p-6 space-x-2 border-t border-gray-600 rounded-b">
           <button
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => setIsProductModalOpen(false)}  // Cambiado aquí
             className="text-white bg-black hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           >
             Cerrar
