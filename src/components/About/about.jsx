@@ -37,19 +37,23 @@ const About = () => {
                 
 
             <div>
-                <header >
-                    <div className="flex items-center justify-center">
-                    <div className="flex items-center justify-center ">
-                        <h1 className="text-4xl font-bold mb-4 text-gold">Acerca de Nosotros</h1>
-                    </div>
-                
-                    <div className="flex-grow border-t-2 border-yellow-200 ml-4"></div>
-                    </div>
-                </header>
+            <header className="flex items-center justify-between">
+                <div>
+                <h1 className="text-4xl font-bold mb-4 text-gold text-left">
+                    Acerca de Nosotros
+                </h1>
+                </div>
+                <div className="flex text-left w-full">
+                <img 
+                    src="/assets/Broquelizate-logos/icono relleno.svg" 
+                    alt="Icono central" 
+                    className="w-8 h-8 transform -translate-y-2" 
+                />
+                </div>
+            </header>
             </div>
-                
-              
-                
+
+            
                 <p className="mb-6 text-lg leading-relaxed text-withe">
                     En Broquelizate, creemos que un accesorio puede ser mucho más que un simple adorno.
                     Desde elegantes aretes hasta piercings únicos, estamos dedicados a ofrecerte productos de la

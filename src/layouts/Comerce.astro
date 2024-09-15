@@ -1,14 +1,9 @@
 ---
 import Header from '../components/Header.astro';
-import Header2 from '../components/Header2.astro';
-import Nav from '../components/Nav/Nav.jsx';
-import About from '../components/About/about.jsx';
-import Servicios from '../components/Servicios.astro';
-import Contacto from '../components/Contacto.astro';
-import Footer from '../components/Footer.astro';
-import BestSelers from '../components/BestSelers/BestSelers.jsx';
 
-//import CartComponent from '../components/Cart/CartComponent';
+
+import CartComponent from '../components/Cart/CartComponent';
+import Productos from '../components/Products/Products';
 
 const { title } = Astro.props;
 ---
@@ -25,18 +20,14 @@ const { title } = Astro.props;
 </head>
 <body class="flex flex-col min-h-screen bg-black-900">
   <Header />
-  <Header2 />
-  <Nav />
+  <CartComponent/ client:load>
+
+  <h1>Articulos: </h1>
   
-  <main class="flex-grow">
-    <About client:load/>
-    <BestSelers client:load/>
-    <!-- <CartComponent client:load /> -->
-    <Servicios />
-    <Contacto />
+
   </main>
 
-  <Footer class="bg-gold py-4 mt-auto footer"/>
+  
 </body>
 </html>
 

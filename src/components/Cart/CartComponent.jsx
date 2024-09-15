@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Cart from '../Cart/Cart.jsx';
 import ProductosSwiper from '../SwiperComponent/ProductosSwiper.jsx';
+import Productos from '../Products/Products.jsx';
 
 const CartComponent = () => {
     const [cartCount, setCartCount] = useState(0);
@@ -8,7 +9,7 @@ const CartComponent = () => {
     return (
         <div>
             <Cart cartCount={cartCount} />
-            <ProductosSwiper cartCount={cartCount} setCartCount={setCartCount} />
+            <Productos cartCount={cartCount} setCartCount={setCartCount} />
         </div>
     );
 };

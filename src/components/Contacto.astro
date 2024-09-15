@@ -2,20 +2,25 @@
 import ContactCard from './ContactCard.astro';
 ---
 <div>
-    <header class="py-8 px-4 mx-auto max-w-xl lg:py-16 lg:px-2">
-        <div class="flex items-center justify-center">
-          <!-- Línea izquierda -->
-          <div class="flex-grow border-t-2 border-yellow-200 mr-4"></div>
-      
-          <!-- Contenedor del texto -->
-          <div class="flex items-center justify-center ">
-            <h1 class="text-3xl font-bold mb-0 text-gold mr-2">Contacto</h1>
-          </div>
-      
-          <!-- Línea derecha -->
-       <div class="flex-grow border-t-2 border-yellow-200 ml-4"></div>
-        </div>
-      </header>
+  <header class="text-center mb-10 w-full">
+    <div class="flex items-center justify-center">
+        <img
+        src="/assets/Broquelizate-logos/icono relleno.svg"
+        alt="Icono izquierda"
+        class="w-6 h-6 transform -translate-y-0"
+        />
+
+        <h1 class="text-4xl font-bold text-gold mx-4 my-4">
+        Contacto
+        </h1>
+
+        <img
+        src="/assets/Broquelizate-logos/icono relleno.svg"
+        alt="Icono derecha"
+        class="w-6 h-6 transform -translate-y-0"
+        />
+    </div>
+    </header>
 </div>
 
 <section id="contact" class="flex flex-col lg:flex-row justify-center items-start p-10 gap-6">

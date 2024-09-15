@@ -30,16 +30,6 @@ const broquelSchema = new mongoose.Schema({
 
 const Producto = mongoose.model('Producto', broquelSchema);
 
-// Endpoint para obtener los productos
-// app.get('/productos', async (req, res) => {
-//   try {
-//     const productos = await Producto.find();
-//     res.json(productos);
-//   } catch (error) {
-//     res.status(500).send('Error obteniendo los productos');
-//   }
-// });
-
 // Endpoint para crear un nuevo producto
 app.post('/productos', async (req, res) => {
   try {

@@ -1,18 +1,36 @@
-<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
-  <!-- Círculo superior -->
-  <circle cx="50" cy="30" r="20" fill="yellow" stroke="black" stroke-width="2"/>
-  <!-- Círculo inferior izquierdo -->
-  <circle cx="30" cy="70" r="20" fill="yellow" stroke="black" stroke-width="2"/>
-  <!-- Círculo inferior derecho -->
-  <circle cx="70" cy="70" r="20" fill="yellow" stroke="black" stroke-width="2"/>
-        <style>
-        path { fill: #efb810; }
-        @media (prefers-color-scheme: dark) {
-            path { fill: #FFF; }
-        }
-    </style>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
+  <style>
+    .st75 { fill: url(#SVGID_00000149383379920332435380000014215336569355713192_); }
+    .st76 { fill: #FFFFFF; stroke: url(#SVGID_00000096738021246630909970000008810194243860211380_); stroke-width: 1.3105; stroke-miterlimit: 10; }
+    .st77 { fill: #FFFFFF; stroke: url(#SVGID_00000125592560632056408930000008678917164728959379_); stroke-width: 1.3105; stroke-miterlimit: 10; }
+  </style>
+  <g>
+    <g>
+      <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="22" y1="822.3282" x2="600.9378" y2="822.3282">
+        <stop offset="0" style="stop-color: #ECB71A"/>
+        <stop offset="0.3198" style="stop-color: #B57A11"/>
+        <stop offset="0.6802" style="stop-color: #FDD649"/>
+        <stop offset="1" style="stop-color: #ECCB34"/>
+      </linearGradient>
+      <circle style="fill: url(#SVGID_1_);" cx="311.47" cy="822.33" r="289.47"/>
+      
+      <linearGradient id="SVGID_00000155856598802396558760000013441176984028198818_" gradientUnits="userSpaceOnUse" x1="603.0562" y1="826.5486" x2="1182" y2="826.5486">
+        <stop offset="0" style="stop-color: #ECB71A"/>
+        <stop offset="0.3198" style="stop-color: #B57A11"/>
+        <stop offset="0.6802" style="stop-color: #FDD649"/>
+        <stop offset="1" style="stop-color: #ECCB34"/>
+      </linearGradient>
+      <circle style="fill: url(#SVGID_00000155856598802396558760000013441176984028198818_);" cx="892.53" cy="826.55" r="289.47"/>
+    </g>
 
+    <linearGradient id="SVGID_00000062893506638992543490000010064814337834284969_" gradientUnits="userSpaceOnUse" x1="316.6264" y1="322.0279" x2="895.5642" y2="322.0279">
+      <stop offset="0" style="stop-color: #ECB71A"/>
+      <stop offset="0.3198" style="stop-color: #B57A11"/>
+      <stop offset="0.6802" style="stop-color: #FDD649"/>
+      <stop offset="1" style="stop-color: #ECCB34"/>
+    </linearGradient>
+    <circle style="fill: url(#SVGID_00000062893506638992543490000010064814337834284969_);" cx="606.1" cy="322.03" r="289.47"/>
+  </g>
 </svg>
-
 
 
