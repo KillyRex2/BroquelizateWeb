@@ -26,10 +26,15 @@ const Productos = ({ cartCount, setCartCount }) => {
   };
 
   const handleSelection = (producto) => {
-    const isProductSelected = selectedProducts.some(p => p._id === producto._id);
+    const isProductSelected = selectedProducts.some((p) => p._id === producto._id);
     if (isProductSelected) {
       setSelectedProducts(selectedProducts.filter((p) => p._id !== producto._id));
       setCartCount(cartCount - 1);
+      setQuantities((prev) => {
+        const newQuantities = { ...prev };
+        delete newQuantities[producto._id]; // Eliminar la cantidad del producto deseleccionado
+        return newQuantities;
+      });
     } else {
       setSelectedProducts([...selectedProducts, producto]);
       setCartCount(cartCount + 1);
@@ -39,6 +44,7 @@ const Productos = ({ cartCount, setCartCount }) => {
   const vaciarCarrito = () => {
     setSelectedProducts([]);
     setCartCount(0);
+    setQuantities({}); // Reiniciar las cantidades al vaciar el carrito
   };
 
   async function fetchFilteredProducts(categoria) {
@@ -194,64 +200,78 @@ const Productos = ({ cartCount, setCartCount }) => {
         Productos seleccionados
       </h2>
 
-      {/* Product List */}
       <ul id="cartModalDescription" className="space-y-4">
-        {selectedProducts.map((producto) => (
-          <li key={producto._id} className="flex items-center space-x-4">
-            <img
-              src={producto.imagen}
-              alt={producto.nombre}
-              className="w-16 h-16 rounded-lg object-cover"
-              loading="lazy"
-            />
-            
-            <form className="max-w-xs mx-auto">
-            <div className="relative flex items-center max-w-[8rem]">
-              <button
-                type="button"
-                onClick={() => handleDecrement(producto._id)}
-                className="bg-white text-black border border-black hover:bg-gray-200 rounded-s-lg p-3 h-11"
-              >
-                <svg className="w-3 h-3" viewBox="0 0 18 2">
-                  <path stroke="currentColor" strokeWidth="2" d="M1 1h16" />
-                </svg>
-              </button>
-              <input
-                type="text"
-                value={quantities[producto._id] || 1}
-                readOnly
-                className="bg-white text-black border border-black h-11 text-center w-full py-2.5"
-              />
-              <button
-                type="button"
-                onClick={() => handleIncrement(producto._id)}
-                className="bg-white text-black border border-black hover:bg-gray-200 rounded-e-lg p-3 h-11"
-              >
-                <svg className="w-3 h-3" viewBox="0 0 18 18">
-                  <path stroke="currentColor" strokeWidth="2" d="M9 1v16M1 9h16" />
-                </svg>
-              </button>
-            </div>
-        </form>
-
-
-
-            <div className="text-left">
-              <p className="text-gray-800 dark:text-gray-200">{producto.nombre}</p>
-              <p className="text-gray-800 dark:text-gray-200">{producto.categoria}</p>
-              <p className="text-gray-600 dark:text-gray-400">${producto.precio.toFixed(2)}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+  {selectedProducts.map((producto) => (
+    <li key={producto._id} className="relative flex items-center space-x-4 group">
+      <div className="relative">
+        <img
+          src={producto.imagen}
+          alt={producto.nombre}
+          className="w-16 h-16 rounded-lg object-cover"
+          loading="lazy"
+        />
+        {/* Botón para eliminar producto (X) */}
+        <button
+          className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"
+          onClick={() => handleSelection(producto)} // Usamos la misma función para eliminar
+        >
+                 <svg
+          className="w-5 h-5"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fillRule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clipRule="evenodd"
+          />
+        </svg>
+        </button>
+      </div>
+      <div className="text-left">
+        <p className="text-gray-800 dark:text-gray-200">{producto.nombre}</p>
+        <p className="text-gray-800 dark:text-gray-200">{producto.categoria}</p>
+        <p className="text-gray-600 dark:text-gray-400">${producto.precio.toFixed(2)}</p>
+      </div>
+      {/* Control de cantidad */}
+      <div className="relative flex items-center max-w-[8rem]">
+        <button
+          type="button"
+          onClick={() => handleDecrement(producto._id)}
+          className="bg-white text-black border border-grey hover:bg-gray-200 rounded-s-lg p-3 h-11"
+        >
+          <svg className="w-3 h-3" viewBox="0 0 18 2">
+            <path stroke="currentColor" strokeWidth="2" d="M1 1h16" />
+          </svg>
+        </button>
+        <input
+          type="text"
+          value={quantities[producto._id] || 1}
+          readOnly
+          className="bg-white text-black border border-grey h-11 text-center w-full py-2.5"
+        />
+        <button
+          type="button"
+          onClick={() => handleIncrement(producto._id)}
+          className="bg-white text-black border border-grey hover:bg-gray-200 rounded-e-lg p-3 h-11"
+        >
+          <svg className="w-3 h-3" viewBox="0 0 18 18">
+            <path stroke="currentColor" strokeWidth="2" d="M9 1v16M1 9h16" />
+          </svg>
+        </button>
+      </div>
+    </li>
+  ))}
+</ul>
 
       {/* Modal Footer */}
       <div className="mt-6 flex justify-between items-center">
         <span className="text-lg font-bold text-gray-800">
           Total: $
           {selectedProducts
-            .reduce((total, producto) => total + producto.precio, 0)
-            .toFixed(2)}
+          .reduce((total, producto) => total + producto.precio * (quantities[producto._id] || 1), 0)
+          .toFixed(2)}
         </span>
         <div className="space-x-4">
           <button
