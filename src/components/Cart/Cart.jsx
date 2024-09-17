@@ -1,7 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Cart.css';
 
-const Cart = ({ cartCount, selectedProducts, setIsModalOpen }) => {
+const Cart = ({ selectedProducts, setIsModalOpen }) => {
+  const [cartCount, setCartCount] = useState(0);
+
+  // Cargar productos desde localStorage al cargar la página
+  useEffect(() => {
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+      const parsedCart = JSON.parse(storedCart);
+      setCartCount(parsedCart.length); // Actualiza el contador del carrito
+    }
+  }, []);
+
+  // Efecto para actualizar el carrito y contador cuando se agregan productos
+  useEffect(() => {
+    if (selectedProducts.length > 0) {
+      // Actualiza el carrito en localStorage
+      localStorage.setItem('cart', JSON.stringify(selectedProducts));
+      // Actualiza el contador del carrito
+      setCartCount(selectedProducts.length);
+    }
+  }, [selectedProducts]); // Se ejecuta cuando cambia `selectedProducts`
+
   return (
     <div id="floating-cart" onClick={() => setIsModalOpen(true)}>
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-cart" viewBox="0 0 16 16">

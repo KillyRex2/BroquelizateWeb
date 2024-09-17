@@ -3,6 +3,7 @@ import Cart from '../Cart/Cart.jsx';
 
 const Productos = ({ cartCount, setCartCount }) => {
   const [productos, setProductos] = useState([]);
+  const [filteredProductos, setFilteredProductos] = useState([]);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
@@ -10,6 +11,7 @@ const Productos = ({ cartCount, setCartCount }) => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('Oro 10K');
   const [lastFetchedCategory, setLastFetchedCategory] = useState(null);
   const [quantities, setQuantities] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleIncrement = (productId) => {
     setQuantities((prev) => ({
@@ -18,11 +20,22 @@ const Productos = ({ cartCount, setCartCount }) => {
     }));
   };
   
-  const handleDecrement = (productId) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [productId]: prev[productId] > 1 ? prev[productId] - 1 : 1,
-    }));
+  const handleDecrement = (id) => {
+    if (quantities[id] === 1) {
+      setSelectedProducts((prevProducts) =>
+        prevProducts.filter((producto) => producto._id !== id)
+      );
+      setQuantities((prevQuantities) => {
+        const updatedQuantities = { ...prevQuantities };
+        delete updatedQuantities[id];
+        return updatedQuantities;
+      });
+    } else {
+      setQuantities((prevQuantities) => ({
+        ...prevQuantities,
+        [id]: (prevQuantities[id] || 1) - 1,
+      }));
+    }
   };
 
   const handleSelection = (producto) => {
@@ -32,7 +45,7 @@ const Productos = ({ cartCount, setCartCount }) => {
       setCartCount(cartCount - 1);
       setQuantities((prev) => {
         const newQuantities = { ...prev };
-        delete newQuantities[producto._id]; // Eliminar la cantidad del producto deseleccionado
+        delete newQuantities[producto._id];
         return newQuantities;
       });
     } else {
@@ -43,8 +56,8 @@ const Productos = ({ cartCount, setCartCount }) => {
 
   const vaciarCarrito = () => {
     setSelectedProducts([]);
-    setCartCount(0);
-    setQuantities({}); // Reiniciar las cantidades al vaciar el carrito
+    setCartCount(2);
+    setQuantities({});
   };
 
   async function fetchFilteredProducts(categoria) {
@@ -71,6 +84,30 @@ const Productos = ({ cartCount, setCartCount }) => {
     fetchFilteredProducts(categoriaSeleccionada);
   }, [categoriaSeleccionada]);
 
+  useEffect(() => {
+    const savedCart = JSON.parse(localStorage.getItem('cart'));
+    const savedQuantities = JSON.parse(localStorage.getItem('quantities'));
+    if (savedCart) setSelectedProducts(savedCart);
+    if (savedQuantities) setQuantities(savedQuantities);
+  }, []);
+  
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(selectedProducts));
+    localStorage.setItem('quantities', JSON.stringify(quantities));
+  }, [selectedProducts, quantities]);
+
+  useEffect(() => {
+    if (searchTerm === '') {
+      setFilteredProductos(productos);
+    } else {
+      setFilteredProductos(
+        productos.filter(producto =>
+          producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    }
+  }, [searchTerm, productos]);
+
   return (
     <div>
       <header className="text-center mb-10 w-full">
@@ -81,6 +118,33 @@ const Productos = ({ cartCount, setCartCount }) => {
             className="w-6 h-6"
           />
           <h1 className="text-4xl font-bold text-gold mx-4 my-4">Artículos</h1>
+          
+          <div
+            className="p-5 overflow-hidden w-[60px] h-[60px] hover:w-[270px] bg-[#000000] shadow-[2px_2px_20px_rgba(0,0,0,0.08)] rounded-full flex group items-center hover:duration-300 duration-300"
+          >
+            <div className="flex items-center justify-center fill-white">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                id="Isolation_Mode"
+                data-name="Isolation Mode"
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+              >
+                <path
+                  d="M18.9,16.776A10.539,10.539,0,1,0,16.776,18.9l5.1,5.1L24,21.88ZM10.5,18A7.5,7.5,0,1,1,18,10.5,7.507,7.507,0,0,1,10.5,18Z"
+                ></path>
+              </svg>
+            </div>
+            <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="outline-none text-[20px] bg-transparent w-full text-white font-normal px-4"
+                placeholder="Buscar productos..."
+            />
+          </div>
+
           <img
             src="/assets/Broquelizate-logos/icono relleno.svg"
             alt="Icono derecha"
@@ -89,7 +153,7 @@ const Productos = ({ cartCount, setCartCount }) => {
         </div>
       </header>
 
-      <div className="flex items-center justify-center pb-14">
+      <div className="flex items-center justify-center pb-14 pl-8 pr-8">
         <div className="radio-inputs">
           {['Oro 10K', 'Oro 14K', 'Oro 18K', 'Titanio', 'Acero Quirúrgico', 'Chapa 18K', 'Rodio'].map((categoria) => (
             <label className="radio" key={categoria}>
@@ -109,9 +173,9 @@ const Productos = ({ cartCount, setCartCount }) => {
       <Cart cartCount={cartCount} selectedProducts={selectedProducts} setIsModalOpen={setIsCartModalOpen} />
 
       {/* Mostrar los productos obtenidos */}
-      {productos.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-          {productos.map((producto) => (
+      {filteredProductos.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 pb-20 pl-8 pr-8">
+          {filteredProductos.map((producto) => (
             <div
               className="flex flex-col rounded-xl bg-white text-gray-700 shadow-md transform transition-transform duration-500 hover:scale-105 hover:shadow-lg hover:shadow-yellow-400/50"
               key={producto._id}
@@ -164,14 +228,11 @@ const Productos = ({ cartCount, setCartCount }) => {
         <p>No se encontraron productos para la categoría seleccionada.</p>
       )}
 
-{/* Modal para el carrito */}
 {isCartModalOpen && (
   <div
     id="cartModal"
-    
     className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50"
     onClick={(e) => {
-      // Close modal if clicked outside the modal content
       if (e.target.id === "cartModal") setIsCartModalOpen(false);
     }}
   >
@@ -195,94 +256,91 @@ const Productos = ({ cartCount, setCartCount }) => {
         </svg>
       </button>
 
-      {/* Modal Header */}
-      <h2 id="cartModalTitle" className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-        Productos seleccionados
-      </h2>
+      <h2 className="text-lg font-semibold text-gray-900 mb-4">Productos seleccionados</h2>
 
-      <ul id="cartModalDescription" className="space-y-4">
-  {selectedProducts.map((producto) => (
-    <li key={producto._id} className="relative flex items-center space-x-4 group">
-      <div className="relative">
-        <img
-          src={producto.imagen}
-          alt={producto.nombre}
-          className="w-16 h-16 rounded-lg object-cover"
-          loading="lazy"
-        />
-        {/* Botón para eliminar producto (X) */}
-        <button
-          className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"
-          onClick={() => handleSelection(producto)} // Usamos la misma función para eliminar
-        >
-                 <svg
-          className="w-5 h-5"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fillRule="evenodd"
-            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
-        </button>
+      <div className="max-h-64 overflow-y-auto">
+        <ul className="space-y-4">
+          {selectedProducts.map((producto) => (
+            <li key={producto._id} className="flex items-center space-x-4">
+              <div className="relative w-24 h-24 flex-shrink-0">
+                <img
+                  src={producto.imagen}
+                  alt={producto.nombre}
+                  className="w-full h-full rounded-lg object-cover"
+                  loading="lazy"
+                />
+                <button
+                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-lg"
+                  onClick={() => handleSelection(producto)}
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="flex-grow min-w-0">
+                <p className="text-gray-800">{producto.nombre}</p>
+                <p className="text-gray-800">{producto.categoria}</p>
+                <p className="text-gray-600">${producto.precio.toFixed(2)}</p>
+              </div>
+              <div className="relative flex items-end max-w-[8rem] ml-8">
+                <button
+                  type="button"
+                  onClick={() => handleDecrement(producto._id)}
+                  className="bg-white text-black border border-gray-300 hover:bg-gray-200 rounded-l-lg p-3 h-11"
+                  aria-label={`Decrease quantity of ${producto.nombre}`}
+                >
+                  <svg className="w-3 h-3" viewBox="0 0 18 2">
+                    <path stroke="currentColor" strokeWidth="2" d="M1 1h16" />
+                  </svg>
+                </button>
+                <input
+                  type="text"
+                  value={quantities[producto._id] || 1}
+                  readOnly
+                  className="bg-white text-black border border-gray-300 h-11 text-center w-full py-2.5"
+                  aria-label={`Quantity of ${producto.nombre}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleIncrement(producto._id)}
+                  className="bg-white text-black border border-gray-300 hover:bg-gray-200 rounded-r-lg p-3 h-11"
+                  aria-label={`Increase quantity of ${producto.nombre}`}
+                >
+                  <svg className="w-3 h-3" viewBox="0 0 18 18">
+                    <path stroke="currentColor" strokeWidth="2" d="M9 1v16M1 9h16" />
+                  </svg>
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
-      <div className="text-left">
-        <p className="text-gray-800 dark:text-gray-200">{producto.nombre}</p>
-        <p className="text-gray-800 dark:text-gray-200">{producto.categoria}</p>
-        <p className="text-gray-600 dark:text-gray-400">${producto.precio.toFixed(2)}</p>
-      </div>
-      {/* Control de cantidad */}
-      <div className="relative flex items-center max-w-[8rem]">
-        <button
-          type="button"
-          onClick={() => handleDecrement(producto._id)}
-          className="bg-white text-black border border-grey hover:bg-gray-200 rounded-s-lg p-3 h-11"
-        >
-          <svg className="w-3 h-3" viewBox="0 0 18 2">
-            <path stroke="currentColor" strokeWidth="2" d="M1 1h16" />
-          </svg>
-        </button>
-        <input
-          type="text"
-          value={quantities[producto._id] || 1}
-          readOnly
-          className="bg-white text-black border border-grey h-11 text-center w-full py-2.5"
-        />
-        <button
-          type="button"
-          onClick={() => handleIncrement(producto._id)}
-          className="bg-white text-black border border-grey hover:bg-gray-200 rounded-e-lg p-3 h-11"
-        >
-          <svg className="w-3 h-3" viewBox="0 0 18 18">
-            <path stroke="currentColor" strokeWidth="2" d="M9 1v16M1 9h16" />
-          </svg>
-        </button>
-      </div>
-    </li>
-  ))}
-</ul>
 
-      {/* Modal Footer */}
       <div className="mt-6 flex justify-between items-center">
         <span className="text-lg font-bold text-gray-800">
           Total: $
           {selectedProducts
-          .reduce((total, producto) => total + producto.precio * (quantities[producto._id] || 1), 0)
-          .toFixed(2)}
+            .reduce((total, producto) => total + producto.precio * (quantities[producto._id] || 1), 0)
+            .toFixed(2)}
         </span>
         <div className="space-x-4">
           <button
-            className="checkout-btn bg-red-600 text-white px-4 py-2 rounded-lg"
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
             onClick={vaciarCarrito}
-            inert={isCartModalOpen ? undefined : 'true'}
           >
             Vaciar carrito
           </button>
-
-          <button className="checkout-btn bg-green-600 text-white px-4 py-2 rounded-lg">
+          <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
             Checkout
           </button>
         </div>
@@ -290,6 +348,8 @@ const Productos = ({ cartCount, setCartCount }) => {
     </div>
   </div>
 )}
+
+
 
 
        {/* Modal para ver más detalles de un producto */}

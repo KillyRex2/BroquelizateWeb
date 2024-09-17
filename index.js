@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';  // Importa el paquete cors
 import mongoose from 'mongoose';
-
+import { ProductsRepository } from './src/repository/products-repository.js'
 const app = express();
 const port = 3000;
 
