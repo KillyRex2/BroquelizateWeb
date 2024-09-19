@@ -18,7 +18,8 @@ const app = express();
 
 // Configurar el middleware de CORS
 app.use(cors({
-  origin: 'http://localhost:4321'  
+  origin: 'http://localhost:4321',  
+  credentials: true 
 }));
 
 // Middleware para json

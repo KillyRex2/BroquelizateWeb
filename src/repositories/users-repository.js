@@ -21,10 +21,7 @@ userSchema.plugin(bcrypt);
 const User = mongoose.model('User', userSchema);
 
 export class UserRepository {
-
   
- 
-
   // Crear un nuevo usuario
   static async create({ username, email, password }) {
     // Validar los datos de entrada
