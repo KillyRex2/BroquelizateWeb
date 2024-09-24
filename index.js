@@ -131,35 +131,37 @@ app.get('/productos', async (req, res) => {
 // Gestion de usuarios 
 
 app.post('/login', async (req, res) => {
-  const { username, password } = req.body
+  const { username, password } = req.body;
+
   try {
-    const user = await UserRepository.login({ username, password })
+    // Attempt to authenticate user via the UserRepository
+    const user = await UserRepository.login({ username, password });
+    
+    // Sign JWT token using the secret key from .env
     const token = jwt.sign(
       { id: user._id, username: user.username },
-        process.env.SECRET_JWT_KEY,
-      {
-        expiresIn: '1h'
-      })
+      process.env.SECRET_JWT_KEY, // Ensure this is properly configured
+      { expiresIn: '1h' }
+    );
 
-    // const Refreshtoken = jwt.sign(
-    //   { id: user._id, username: user.username },
-    //   SECRET_JWT_KEY,
-    //   {
-    //     expiresIn: '7d'
-    //   })
+    // Set cookie with JWT token, with appropriate environment-based settings
+    res.cookie('access_token', token, {
+      httpOnly: true,  // The cookie cannot be accessed via JavaScript on the client
+      secure: process.env.NODE_ENV === 'production',  // Only set secure flag in production
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',  // More lenient in dev
+      maxAge: 1000 * 60 * 60  // 1 hour expiration
+    });
 
-    res
-      .cookie('access_token', token, {
-        httpOnly: true, // Cookie solo accesible desde el server
-        secure: process.env.SECRET_JWT_SEC === 'production', // la cookie solo se puede acceder en https
-        sameSite: 'strict', // la cookie solo accesible en el mismo dominio
-        maxAge: 1000 * 60 * 60 // la cookie tiene un tiempo de validez de 1 hora 
-      })
-      .send({ user, token })
+    // Send back user data (excluding password) and token
+    const { password: _, ...safeUser } = user;  // Strip out password field
+    res.status(200).send({ user: safeUser, token });
+
   } catch (err) {
-    res.status(401).send(err.message)
+    // Log and send the error message if something goes wrong
+    console.error('Login error:', err);
+    res.status(401).send(err.message);  // Return a 401 Unauthorized error
   }
-})
+});
 
 app.post('/register', async (req, res) => {
     const { username, email, password } = req.body

@@ -1,5 +1,5 @@
 ---
-import Header from '../components/Header.astro';
+import Header from '../components/Header.jsx'
 import Header2 from '../components/Header2.astro';
 import Nav from '../components/Nav/Nav.jsx';
 import About from '../components/About/about.jsx';
@@ -24,7 +24,7 @@ const { title } = Astro.props;
   <title>{title}</title>
 </head>
 <body class="flex flex-col min-h-screen bg-black-900">
-  <Header />
+  <Header client:load/>
   <Header2 />
   <Nav />
   

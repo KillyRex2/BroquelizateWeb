@@ -11,24 +11,25 @@ const LoginForm = () => {
     password: '',
     confirmPassword: '' 
   });
-
+  
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3000/login', loginData, {
-        withCredentials: true // Para manejar las cookies
+        withCredentials: true
       });
-
       if (response.status === 200) {
+        // Aquí almacenas el nombre de usuario en localStorage
+        localStorage.setItem('username', loginData.username);
         alert('Login successful');
-      } else {
-        alert(`Login failed: ${response.data.error}`);
+        // Redirigir a la página principal
+        window.location.href = '/';
       }
     } catch (error) {
-      console.error('Error during login:', error);
       alert('Error during login. Please try again.');
     }
   };
+
 
   const handleRegister = async (e) => {
     e.preventDefault();

@@ -47,22 +47,16 @@ export class UserRepository {
 
   // Iniciar sesión
   static async login({ username, password }) {
-    // Validar los datos de entrada
     Validation.username(username);
-    Validation.email(email);
     Validation.password(password);
-
-    // Buscar al usuario por su nombre de usuario
+  
     const user = await User.findOne({ username });
     if (!user) throw new Error(`User ${username} not found`);
-
-    // Comparar la contraseña proporcionada con la almacenada (bcrypt lo hace automáticamente)
-    const isValid = await user.verifyPassword(password);  // verifyPassword es un método agregado por mongoose-bcrypt
+  
+    const isValid = await user.verifyPassword(password);
     if (!isValid) throw new Error('Invalid password');
-
-    // Retornar la información del usuario sin la contraseña
+  
     const { password: _, ...publicUser } = user.toObject();
-
     return publicUser;
   }
 
