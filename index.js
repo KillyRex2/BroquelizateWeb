@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser'
 import cors from 'cors';  
 import mongoose from 'mongoose';
+const stripe = require('stripe')(process.env.STRIPE_KEY !== 'production');
 import { UserRepository } from './src/repositories/users-repository.js'
 
 // Cargar las variables de entorno
@@ -198,6 +199,26 @@ app.get('/users', async (req, res) => {
     console.error('Error obteniendo los usuarios:', error);
     res.status(500).send('Error obteniendo los usuarios');
   }
+});
+
+
+// Pagos Stripe 
+
+app.post('/create-checkout-session', async (req, res) => {
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+        price: '{{PRICE_ID}}',
+        quantity: 1,
+      },
+    ],
+    mode: 'payment',
+    success_url: `${YOUR_DOMAIN}?success=true`,
+    cancel_url: `${YOUR_DOMAIN}?canceled=true`,
+  });
+
+  res.redirect(303, session.url);
 });
 
 

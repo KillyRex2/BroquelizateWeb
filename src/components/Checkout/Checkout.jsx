@@ -1,34 +1,168 @@
-import React, { useEffect, useState } from 'react';
-import './Checkout.css';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import './Checkout.css'
 
 const Checkout = () => {
 
+  const location = useLocation();
+  const { selectedProducts, total } = location.state || { selectedProducts: [], total: 0 };
+
+  const [isEnvioModalOpen, setEnvioModalOpen] = useState(false);
+  const [isPagoModalOpen, setPagoModalOpen] = useState(false);
+
+  const toggleModal = (modal) => {
+    if (modal === 'envio') {
+      setEnvioModalOpen(!isEnvioModalOpen);
+    } else if (modal === 'pago') {
+      setPagoModalOpen(!isPagoModalOpen);
+    }
+  };
+
   return (
-<div>
-  <header className="text-center mb-10 w-full">
-    <div className="flex items-center justify-center">
-        <img
-        src="/assets/Broquelizate-logos/icono relleno.svg"
-        alt="Icono izquierda"
-        className="w-6 h-6 transform -translate-y-0"
-        />
+    <div> 
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg mx-auto pb-12 mb-12">
+    <div class="pb-10 mb-4">
+  <h1 class="text-xl font-semibold mb-4 text-gray-900">Checkout</h1>
+  <div class="checkout-card">
+    <h2 class="order-summary-title">Resumen del Pedido</h2>
+    <ul class="product-list">
+      {selectedProducts.map((producto) => (
+        <li class="product-item" key={producto._id}>
+          <div class="product-info">
+            <img
+              src={producto.imagen}
+              alt={producto.nombre}
+              className="product-image"
+              loading="lazy"
+            />
+            <div>
+              <h4 class="product-name">{producto.nombre}</h4>
+              <p class="product-price">${producto.precio.toFixed(2)} x {producto.quantity}</p>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <h3 class="total-amount">Total: ${total.toFixed(2)}</h3>
+  </div>
+</div>
+      <h2 className="text-xl font-semibold mb-4 text-gray-900">Entrega</h2>
+      <form className="space-y-4">
+        <div>
+          <label className="block text-gray-900 mb-1 " htmlFor="pais">País / Región</label>
+          <select id="pais" className="text-gray-900 bg-gray-100 w-full border border-gray-300  rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option>México</option>
+          </select>
+        </div>
 
-        <h1 className="text-4xl font-bold text-gold mx-4 my-4">
-        Checkout
-        </h1>
+        <div className="flex space-x-4">
+          <div className="w-1/2">
+            <label className="block text-gray-700 mb-1" htmlFor="nombre">Nombre</label>
+            <input id="nombre" type="text" className="text-gray-900 bg-gray-100 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+          </div>
+          <div className="w-1/2">
+            <label className="block text-gray-700 mb-1" htmlFor="apellidos">Apellidos</label>
+            <input id="apellidos" type="text" className="text-gray-900 bg-gray-100 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+          </div>
+        </div>
 
-        <img
-        src="/assets/Broquelizate-logos/icono relleno.svg"
-        alt="Icono derecha"
-        className="w-6 h-6 transform -translate-y-0"
-        />
-    </div>
-    </header>
+        <div>
+          <label className="block text-gray-700 mb-1" htmlFor="referencias">Entre calles o referencias</label>
+          <input id="referencias" type="text" placeholder="(color de fachada, Edif #.. Dep...)" className="text-gray-900 bg-gray-100 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+        </div>
 
+        <div>
+          <label className="block text-gray-700 mb-1" htmlFor="direccion">Dirección</label>
+          <input id="direccion" type="text" className="text-gray-900 bg-gray-100 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+        </div>
 
-  <section id="checkout" class="">
-      
-      <div class="modal">
+        <div>
+          <label className="block text-gray-700 mb-1" htmlFor="colonia">Colonia</label>
+          <input id="colonia" type="text" className="text-gray-900 bg-gray-100 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+        </div>
+
+        <div className="flex space-x-4">
+          <div className="w-1/3">
+            <label className="block text-gray-700 mb-1" htmlFor="codigo-postal">Código postal</label>
+            <input id="codigo-postal" type="text" className="text-gray-900 bg-gray-100 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+          </div>
+          <div className="w-1/3">
+            <label className="block text-gray-700 mb-1" htmlFor="ciudad">Ciudad</label>
+            <input id="ciudad" type="text" className="text-gray-900 bg-gray-100 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+          </div>
+          <div className="w-1/3">
+            <label className="block text-gray-700 mb-1" htmlFor="estado">Estado</label>
+            <select id="estado" className="text-gray-900 bg-gray-100 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option>Coahuila de Zaragoza</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-gray-700 mb-1" htmlFor="telefono">Teléfono</label>
+          <input id="telefono" type="text" className="text-gray-900 bg-gray-100 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+        </div>
+
+        <div className="space-y-2">
+          <div>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600"/>
+              <span className="ml-2 text-gray-700">Guardar mi información y consultar más rápidamente la próxima vez</span>
+            </label>
+          </div>
+          <div>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600"/>
+              <span className="ml-2 text-gray-700">Enviarme novedades y ofertas por SMS</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-lg font-semibold mt-4 mb-2">Métodos de envío</h3>
+          <div className="bg-gray-100 border border-gray-300 rounded-md p-4 text-gray-600">
+            Ingresa tu dirección de envío para ver los métodos disponibles.
+          </div>
+        </div>
+      </form>
+
+      {/* Modal para métodos de envío */}
+      {isEnvioModalOpen && (
+        <div className="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+            <h3 className="text-xl font-semibold mb-4">Métodos de Envío</h3>
+            <p className="text-gray-700 mb-4">Ingresa tu dirección de envío para ver los métodos disponibles.</p>
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onClick={() => toggleModal('envio')}>Cerrar</button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para métodos de pago */}
+      {isPagoModalOpen && (
+        <div className="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+            <h3 className="text-xl font-semibold mb-4">Métodos de Pago</h3>
+            <div className="space-y-4">
+              <button className="bg-gray-100 border border-gray-300 rounded-md p-4 w-full text-gray-700 flex items-center justify-between">
+                <span>Tarjeta de Crédito o Débito</span>
+                <svg className="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm4 15H8v-2h8v2zm4-4H4V8h16v5z"/>
+                </svg>
+              </button>
+              <button className="bg-gray-100 border border-gray-300 rounded-md p-4 w-full text-gray-700 flex items-center justify-between">
+                <span>PayPal</span>
+                <svg className="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm4 15H8v-2h8v2zm4-4H4V8h16v5z"/>
+                </svg>
+              </button>
+            </div>
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 mt-4" onClick={() => toggleModal('pago')}>Cerrar</button>
+          </div>
+        </div>
+      )}
+<h2 className="text-xl font-semibold mb-4 mt-6 text-gray-900">Métodos de pago: </h2>
+<div class="modal pt-18 mt-8">
+  
       <form class="form ">
         <div class="payment--options">
           <button name="paypal" type="button">
@@ -83,20 +217,20 @@ const Checkout = () => {
         </div>
         <div class="separator">
           <hr class="line"/>
-          <p>or pay using credit card</p>
+          <p>Pago usando tarjeta de crédito</p>
           <hr class="line"/>
         </div>
         <div class="credit-card-info--form">
           <div class="input_container">
-            <label for="password_field" class="input_label">Card holder full name</label>
-            <input id="password_field" class="input_field" type="text" name="input-name" title="Inpit title" placeholder="Enter your full name"/>
+            <label for="password_field" class="input_label">Nombre del titular</label>
+            <input id="password_field" class="input_field" type="text" name="input-name" title="Inpit title" placeholder="Nombre Completo"/>
           </div>
           <div class="input_container">
-            <label for="password_field" class="input_label">Card Number</label>
+            <label for="password_field" class="input_label">Número de tarjeta</label>
             <input id="password_field" class="input_field" type="number" name="input-name" title="Inpit title" placeholder="0000 0000 0000 0000"/>
           </div>
           <div class="input_container">
-            <label for="password_field" class="input_label">Expiry Date / CVV</label>
+            <label for="password_field" class="input_label">Fecha de vencimiento/ CVV</label>
             <div class="split">
             <input id="password_field" class="input_field" type="text" name="input-name" title="Expiry Date" placeholder="01/23"/>
             <input id="password_field" class="input_field" type="number" name="cvv" title="CVV" placeholder="CVV"/>
@@ -106,10 +240,8 @@ const Checkout = () => {
           <button class="purchase--btn">Checkout</button>
       </form>
       </div>
-        </section>
-
-</div>
-    
+      </div>
+    </div>
   );
 };
 

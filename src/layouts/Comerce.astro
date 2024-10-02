@@ -2,9 +2,9 @@
 import Header from '../components/Header';
 
 
-import CartComponent from '../components/Cart/CartComponent';
+import CartWrapper from '../components/Cart/CartWrapper.jsx';
 import Footer from '../components/Footer.astro';
-import Servicios from '../components/Servicios.astro';
+import Checkout from '../components/Checkout/Checkout.jsx';
 
 const { title } = Astro.props;
 ---
@@ -22,7 +22,7 @@ const { title } = Astro.props;
 <body class="flex flex-col min-h-screen bg-black-900">
   <Header client:load/>
   <main class="flex-grow">
-  <CartComponent/ client:load>
+    <CartWrapper client:only="react" />
   
   </main>
 

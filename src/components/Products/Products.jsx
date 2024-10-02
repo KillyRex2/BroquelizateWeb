@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Cart from '../Cart/Cart.jsx';
 
 const Productos = ({ cartCount, setCartCount }) => {
@@ -12,6 +13,8 @@ const Productos = ({ cartCount, setCartCount }) => {
   const [lastFetchedCategory, setLastFetchedCategory] = useState(null);
   const [quantities, setQuantities] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
+ 
 
   const handleIncrement = (productId) => {
     setQuantities((prev) => ({
@@ -37,6 +40,11 @@ const Productos = ({ cartCount, setCartCount }) => {
       }));
     }
   };
+
+  const handleCheckout = () => {
+    navigate('/checkout');
+  };
+
 
   const handleSelection = (producto) => {
     const isProductSelected = selectedProducts.some((p) => p._id === producto._id);
@@ -340,9 +348,21 @@ const Productos = ({ cartCount, setCartCount }) => {
           >
             Vaciar carrito
           </button>
-          <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-            Checkout
-          </button>
+          <button
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+            onClick={() => {
+              const total = selectedProducts.reduce(
+                (sum, producto) => sum + producto.precio * (quantities[producto._id] || 1),
+                0
+              );
+
+              navigate('/checkout', {
+                state: { selectedProducts, total }, // Pasamos los productos seleccionados y el total
+              });
+            }}
+          >
+          Checkout
+</button>
         </div>
       </div>
     </div>
