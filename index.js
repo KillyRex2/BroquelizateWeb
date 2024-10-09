@@ -4,11 +4,14 @@ import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser'
 import cors from 'cors';  
 import mongoose from 'mongoose';
-const stripe = require('stripe')(process.env.STRIPE_KEY !== 'production');
 import { UserRepository } from './src/repositories/users-repository.js'
+import Stripe from 'stripe';
+
 
 // Cargar las variables de entorno
 dotenv.config(); 
+const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
+
 
 // Usar las variables de entorno
 import './src/enviroments/config.js';  // Asegúrate de que este archivo sea un módulo ES
@@ -204,21 +207,33 @@ app.get('/users', async (req, res) => {
 
 // Pagos Stripe 
 
-app.post('/create-checkout-session', async (req, res) => {
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-        price: '{{PRICE_ID}}',
-        quantity: 1,
-      },
-    ],
-    mode: 'payment',
-    success_url: `${YOUR_DOMAIN}?success=true`,
-    cancel_url: `${YOUR_DOMAIN}?canceled=true`,
-  });
+// Ruta para crear el PaymentIntent
 
-  res.redirect(303, session.url);
+
+app.post('/create-payment-intent', async (req, res) => {
+  const { payment_method, amount } = req.body;  
+    // Log para verificar los datos
+    console.log('Payment Method:', payment_method);
+    console.log('Amount:', amount);
+
+  try {
+    const paymentIntent = await stripeInstance.paymentIntents.create({
+      amount,
+      currency: 'mxn',
+      payment_method,
+      automatic_payment_methods: {
+        enabled: true,
+        
+      },
+    });
+
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.error('Stripe Error:', error.message);
+    res.status(400).send({ error: error.message });
+  }
 });
 
 
