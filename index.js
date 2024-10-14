@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors';  
 import mongoose from 'mongoose';
 import { UserRepository } from './src/repositories/users-repository.js'
+import { OrderRepository } from './src/repositories/order-repository.js'
 import Stripe from 'stripe';
 
 
@@ -235,6 +236,64 @@ app.post('/create-payment-intent', async (req, res) => {
     res.status(400).send({ error: error.message });
   }
 });
+
+// Ruta Ordenes
+
+// Ruta para obtener todas las órdenes o filtrarlas por estado o usuario
+app.get('/ordenes', async (req, res) => {
+  try {
+    const { estado, usuario } = req.query; // Puedes filtrar por estado y usuario
+    const orders = await getAllOrders(estado, usuario);
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener las órdenes', error });
+  }
+});
+
+// Ruta para crear una nueva orden
+app.post('/orden', async (req, res) => {
+  try {
+    const orderData = req.body; // Datos de la orden enviados en el body de la solicitud
+    console.log("Datos recibidos para crear orden:", orderData);
+    const nuevaOrden = await OrderRepository.createOrder(orderData);
+    res.status(201).json(nuevaOrden);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al crear la orden', error });
+  }
+});
+
+
+
+// Ruta para actualizar una orden por ID
+app.put('/ordenes/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const orderData = req.body;
+    const ordenActualizada = await updateOrderById(id, orderData);
+    if (!ordenActualizada) {
+      return res.status(404).json({ message: 'Orden no encontrada' });
+    }
+    res.status(200).json(ordenActualizada);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al actualizar la orden', error });
+  }
+});
+
+// Ruta para eliminar una orden por ID
+app.delete('/ordenes/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const ordenEliminada = await deleteOrderById(id);
+    if (!ordenEliminada) {
+      return res.status(404).json({ message: 'Orden no encontrada' });
+    }
+    res.status(200).json({ message: 'Orden eliminada' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al eliminar la orden', error });
+  }
+});
+
+
 
 
 // Iniciar el servidor

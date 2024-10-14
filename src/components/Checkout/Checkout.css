@@ -219,4 +219,8 @@
   color: #333;
 }
 
+/* Oculta el botón de "Debit or Credit Card" */
+.paypal-buttons .paypal-button-row.paypal-alternative {
+  display: none;
+}
 

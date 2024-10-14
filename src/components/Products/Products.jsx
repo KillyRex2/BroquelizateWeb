@@ -41,9 +41,57 @@ const Productos = ({ cartCount, setCartCount }) => {
     }
   };
 
-  const handleCheckout = () => {
-    navigate('/checkout');
+  const handleCheckout = async () => { 
+    try {
+      // Calcula el total de la orden sumando los precios por cantidad
+      const total = selectedProducts.reduce((total, product) => {
+        const quantity = quantities[product._id] || 1; // Asegurar que la cantidad tenga un valor por defecto
+        const precio = product.precio || 0; // Asegurar que precio tenga un valor por defecto
+        return total + (precio * quantity);
+      }, 0);  // Inicializamos total en 0 para evitar NaN
+  
+      // Si el total es NaN, lanzar un error
+      if (isNaN(total)) {
+        throw new Error("El total calculado es NaN. Verifica los precios y las cantidades.");
+      }
+  
+      // Crea el objeto de datos de la orden con los campos requeridos
+      const orderData =  {
+        products: selectedProducts.map(product => ({
+          productId: product._id,
+          quantity: quantities[product._id] || 1,
+        })),
+        total: total,  // Total corregido
+        username: 'Killyrez2'  // Cambiado de userId a username
+      };
+  
+      // Enviar los datos al servidor usando fetch
+      const response = await fetch('http://localhost:3000/orden', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+  
+      console.log('Datos de la orden:', orderData);
+  
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Orden creada con éxito:', result);
+  
+        // Redirigir a la página de checkout
+        navigate('/checkout', {
+          state: { selectedProducts, total }, // Pasamos los productos seleccionados y el total
+        });
+      } else {
+        console.error('Error al crear la orden');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error.message);
+    }
   };
+  
 
 
   const handleSelection = (producto) => {
@@ -350,19 +398,10 @@ const Productos = ({ cartCount, setCartCount }) => {
           </button>
           <button
             className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-            onClick={() => {
-              const total = selectedProducts.reduce(
-                (sum, producto) => sum + producto.precio * (quantities[producto._id] || 1),
-                0
-              );
-
-              navigate('/checkout', {
-                state: { selectedProducts, total }, // Pasamos los productos seleccionados y el total
-              });
-            }}
+            onClick={handleCheckout}
           >
           Checkout
-</button>
+          </button>
         </div>
       </div>
     </div>
