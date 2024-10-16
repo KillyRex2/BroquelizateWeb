@@ -98,7 +98,7 @@ const Productos = ({ cartCount, setCartCount }) => {
     const isProductSelected = selectedProducts.some((p) => p._id === producto._id);
     if (isProductSelected) {
       setSelectedProducts(selectedProducts.filter((p) => p._id !== producto._id));
-      setCartCount(cartCount - 1);
+      setCartCount - 1;
       setQuantities((prev) => {
         const newQuantities = { ...prev };
         delete newQuantities[producto._id];
@@ -106,13 +106,13 @@ const Productos = ({ cartCount, setCartCount }) => {
       });
     } else {
       setSelectedProducts([...selectedProducts, producto]);
-      setCartCount(cartCount + 1);
+      setCartCount + 1;
     }
   };
 
   const vaciarCarrito = () => {
     setSelectedProducts([]);
-    setCartCount(2);
+    setCartCount=0;
     setQuantities({});
   };
 
@@ -411,26 +411,21 @@ const Productos = ({ cartCount, setCartCount }) => {
 
 
 
-       {/* Modal para ver más detalles de un producto */}
-       {isProductModalOpen && (
+{/* Modal para ver más detalles de un producto */}
+{isProductModalOpen && (
   <div
     id="defaultModal"
     role="dialog"
     aria-labelledby="modalTitle"
     aria-describedby="modalDescription"
-    aria-hidden="true"
     className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50"
     onClick={(e) => {
-      // Close modal if clicked outside the modal content
       if (e.target.id === "defaultModal") setIsProductModalOpen(false);
     }}
   >
-    <div className="relative w-full max-w-md bg-white rounded-lg shadow-lg dark:bg-gray-600">
+    <div className="relative w-full max-w-md bg-white rounded-lg shadow-lg">
       <div className="flex items-start justify-between p-4 border-b border-gray-600 rounded-t">
-        <h3
-          id="modalTitle"
-          className="text-lg font-semibold text-gray-900 dark:text-white"
-        >
+        <h3 id="modalTitle" className="text-lg font-semibold text-gray-900">
           {productoSeleccionado?.nombre}
         </h3>
         <button
@@ -453,22 +448,16 @@ const Productos = ({ cartCount, setCartCount }) => {
         </button>
       </div>
       <div className="p-6">
-        {/* Product Image */}
         <img
           src={productoSeleccionado?.imagen}
           alt={productoSeleccionado?.nombre}
           className="w-full h-48 object-cover rounded-lg mb-4"
           loading="lazy"
         />
-        {/* Product Description */}
-        <p
-          id="modalDescription"
-          className="text-base leading-relaxed text-gray-700 dark:text-gray-300 mb-2"
-        >
+        <p id="modalDescription" className="text-base leading-relaxed text-gray-700 mb-2">
           {productoSeleccionado?.descripcion}
         </p>
-        {/* Product Price */}
-        <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
+        <p className="text-lg font-bold text-gray-900">
           ${productoSeleccionado?.precio.toFixed(2)}
         </p>
       </div>
