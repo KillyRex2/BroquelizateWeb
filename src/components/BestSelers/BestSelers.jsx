@@ -1,40 +1,44 @@
-import { Swiper, SwiperSlide } from 'swiper/react'; 
-import { Navigation, Autoplay } from 'swiper/modules'; 
+import { Swiper, SwiperSlide } from 'swiper/react';   
+import { Autoplay } from 'swiper/modules'; 
 import 'swiper/swiper-bundle.css'; 
 
 const BestSelers = () => {
     const products = [
         {
-            src: '/assets/recomendations.webp',
-            name: 'Pulsera Eslabones Personalizada',
-            price: '$450.00',
+            src: '/assets/bestsellers/ramitaOreja.jpg',
+            hoverSrc: '/assets/bestsellers/ramitaVerde.jpg', // Imagen para hover
+            name: 'Ramita marquesa',
+            price: '$360.00',
             rating: 4.5,
             reviews: 7,
-            action: 'Añadir al carrito'
+            action: 'Ver productos'
         },
         {
-            src: '/assets/recomendations2.webp',
-            name: 'Set de Earcuffs Gold',
-            price: '$410.00',
+            src: '/assets/bestsellers/serpiente.jpg',
+            hoverSrc: '/assets/bestsellers/serpienteNormal.jpg', // Imagen para hover
+            name: 'Arracada serpiente',
+            price: '$320.00',
             rating: 4.8,
             reviews: 28,
-            action: 'Añadir al carrito'
+            action: 'Ver productos'
         },
         {
-            src: '/assets/recomendations3.webp',
-            name: 'Collar de 6 Perlas Minimalista',
+            src: '/assets/bestsellers/industrialOreja.jpg',
+            hoverSrc: '/assets/bestsellers/industrial.jpg', // Imagen para hover
+            name: 'Arracada',
             price: '$300.00',
             rating: 4.7,
             reviews: 30,
-            action: 'Añadir al carrito'
+            action: 'Ver productos'
         },
         {
-            src: '/assets/recomendations4.webp',
-            name: 'Collar Mensaje Personalizado',
-            price: '$590.00',
+            src: '/assets/bestsellers/corazonOreja.jpg',
+            hoverSrc: '/assets/bestsellers/corazon.jpg', // Imagen para hover
+            name: 'Corazón piedras chico',
+            price: '$380.00',
             rating: 4.9,
             reviews: 46,
-            action: 'Elegir opciones'
+            action: 'Ver productos'
         },
     ];
 
@@ -69,51 +73,57 @@ const BestSelers = () => {
     </a>
         </header>
 
+        {/* Contenedor principal */}
+<div className="flex flex-col lg:flex-row justify-center items-center lg:items-stretch lg:gap-2">
+    {/* Contenedor del video estático */}
+    <div className="lg:w-1/4 w-full flex justify-center  lg:mr-0 lg:flex-none">
+        <video 
+            src="https://firebasestorage.googleapis.com/v0/b/broquelizate-8d060.appspot.com/o/Assets%2FVideos%2Fbroquevid1.mp4?alt=media&token=366b6abf-c56f-455e-abdc-ee84df349ffe" 
+            alt="Video estático" 
+            className="w-full lg:w-auto h-auto object-cover rounded-lg lg:max-h-[500px]"
+            autoPlay
+            loop
+            muted
+        />
+    </div>
 
-
-            {/* Contenido principal */}
-            <div className="flex flex-col lg:flex-row justify-center items-center lg:items-start">
-                {/* Imagen estática */}
-                <div className="lg:w-1/4 w-full flex justify-center lg:justify-start mb-8 lg:mb-0">
-                    <img 
-                        src="/assets/oreja.webp" 
-                        alt="Imagen estática" 
-                        className="w-full lg:w-80 h-auto object-cover rounded-lg"
-                    />
-                </div>
-
-                {/* Carrusel */}
-                <div className="lg:w-3/4 w-full">
-                    <Swiper
-                        modules={[Navigation, Autoplay]}
-                        spaceBetween={30}
-                        slidesPerView={3}
-                        navigation
-                        autoplay={{ delay: 4000 }}
-                        loop={true}
-                    >
-                        {products.map((product, index) => (
-                            <SwiperSlide key={index}>
-                                <div className="flex flex-col items-center bg-white text-black p-5 rounded-lg shadow-lg">
-                                    <img 
-                                        src={product.src} 
-                                        alt={product.name} 
-                                        className="w-full h-64 object-cover mb-4 rounded-lg"
-                                    />
-                                    <h2 className="text-lg font-bold">{product.name}</h2>
-                                    <p className="text-yellow-500">
-                                        {Array(Math.round(product.rating)).fill('⭐').join('')} ({product.reviews})
-                                    </p>
-                                    <p className="text-gray-700 font-semibold mb-4">{product.price}</p>
-                                    <button className="px-4 py-2 border border-gold text-gold rounded hover:bg-gold hover:text-white transition">
-                                        {product.action}
-                                    </button>
-                                </div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
-                </div>
-            </div>
+    {/* Carrusel de productos */}
+    <div className="lg:w-3/4 w-full flex justify-center">
+        <Swiper
+            modules={[Autoplay]}
+            spaceBetween={20}
+            slidesPerView={3}
+            autoplay={{ delay: 4000 }}
+            loop={true}
+            className="w-full"
+        >
+            {products.map((product, index) => (
+                <SwiperSlide key={index}>
+                    <div className="flex flex-col items-center bg-white text-black p-5 rounded-lg shadow-lg h-full group">
+                        <img 
+                            src={product.src} 
+                            alt={product.name} 
+                            className="w-full h-64 object-cover mb-4 rounded-lg transition-transform duration-300 group-hover:hidden" 
+                        />
+                        <img 
+                            src={product.hoverSrc} 
+                            alt={product.name + ' hover'} 
+                            className="w-full h-64 object-cover mb-4 rounded-lg transition-transform duration-300 hidden group-hover:block" 
+                        />
+                        <h2 className="text-lg font-bold">{product.name}</h2>
+                        <p className="text-yellow-500 mb-2">
+                            {Array(Math.round(product.rating)).fill('⭐').join('')} ({product.reviews})
+                        </p>
+                        <p className="text-gray-700 font-semibold mb-4">{product.price}</p>
+                        <a href="/productos" className="px-4 py-2 border border-gold text-gold rounded hover:bg-gold hover:text-white transition">
+                            {product.action}
+                        </a>
+                    </div>
+                </SwiperSlide>
+            ))}
+        </Swiper>
+    </div>
+</div>
         </section>
     );
 };

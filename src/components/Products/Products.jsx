@@ -13,8 +13,8 @@ const Productos = ({ cartCount, setCartCount }) => {
   const [lastFetchedCategory, setLastFetchedCategory] = useState(null);
   const [quantities, setQuantities] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate();
- 
+  const navigate = useNavigate(); // Asegúrate de inicializar `navigate` si aún no lo has hecho
+
 
   const handleIncrement = (productId) => {
     setQuantities((prev) => ({
@@ -41,31 +41,46 @@ const Productos = ({ cartCount, setCartCount }) => {
     }
   };
 
-  const handleCheckout = async () => { 
+  const handleCheckout = async () => {
+    
+    
     try {
-      // Calcula el total de la orden sumando los precios por cantidad
-      const total = selectedProducts.reduce((total, product) => {
-        const quantity = quantities[product._id] || 1; // Asegurar que la cantidad tenga un valor por defecto
-        const precio = product.precio || 0; // Asegurar que precio tenga un valor por defecto
-        return total + (precio * quantity);
-      }, 0);  // Inicializamos total en 0 para evitar NaN
+      // Realiza la solicitud al endpoint de verificación de autenticación
+      const authResponse = await fetch('http://localhost:3000/auth/check', {
+        method: 'GET',
+        credentials: 'include', // Incluye las cookies en la solicitud
+      });
   
-      // Si el total es NaN, lanzar un error
+      if (!authResponse.ok) {
+        // Redirige al login si no está autenticado
+        console.warn('Usuario no autenticado, redirigiendo a login');
+        navigate('/login'); // Redirige al login si no está autenticado
+        return; // Detiene la ejecución para no continuar con el checkout
+      }
+  
+      const authData = await authResponse.json();
+      const loggedInUser = authData.user;
+  
+      // Resto del código para procesar el pedido
+      const total = selectedProducts.reduce((total, product) => {
+        const quantity = quantities[product._id] || 1;
+        const precio = product.precio || 0;
+        return total + (precio * quantity);
+      }, 0);
+  
       if (isNaN(total)) {
         throw new Error("El total calculado es NaN. Verifica los precios y las cantidades.");
       }
   
-      // Crea el objeto de datos de la orden con los campos requeridos
-      const orderData =  {
+      const orderData = {
         products: selectedProducts.map(product => ({
           productId: product._id,
           quantity: quantities[product._id] || 1,
         })),
-        total: total,  // Total corregido
-        username: 'Killyrez2'  // Cambiado de userId a username
+        total: total,
+        username: loggedInUser.username  // Usamos el usuario logueado desde la respuesta
       };
   
-      // Enviar los datos al servidor usando fetch
       const response = await fetch('http://localhost:3000/orden', {
         method: 'POST',
         headers: {
@@ -73,8 +88,6 @@ const Productos = ({ cartCount, setCartCount }) => {
         },
         body: JSON.stringify(orderData),
       });
-  
-      console.log('Datos de la orden:', orderData);
   
       if (response.ok) {
         const result = await response.json();
@@ -91,7 +104,8 @@ const Productos = ({ cartCount, setCartCount }) => {
       console.error('Error en la solicitud:', error.message);
     }
   };
-  
+
+
 
 
   const handleSelection = (producto) => {

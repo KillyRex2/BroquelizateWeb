@@ -4,13 +4,18 @@ import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser'
 import cors from 'cors';  
 import mongoose from 'mongoose';
+import nodemailer from 'nodemailer';
 import { UserRepository } from './src/repositories/users-repository.js'
 import { OrderRepository } from './src/repositories/order-repository.js'
 import Stripe from 'stripe';
 
 
+
 // Cargar las variables de entorno
 dotenv.config(); 
+
+
+
 const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 
@@ -183,6 +188,7 @@ app.post('/register', async (req, res) => {
     try {
       const id = await UserRepository.create({ username, email, password })
       res.send({ id })
+      //sendWelcomeEmail(email);
     } catch (err) {
       console.error(err) // Para que puedas ver el error exacto en la consola
       res.status(400).send({ error: err.message })
@@ -202,6 +208,26 @@ app.get('/users', async (req, res) => {
   } catch (error) {
     console.error('Error obteniendo los usuarios:', error);
     res.status(500).send('Error obteniendo los usuarios');
+  }
+});
+
+// Endpoint para verificar si el usuario está autenticado
+app.get('/auth/check', (req, res) => {
+  const token = req.cookies.access_token;
+
+  if (!token) {
+    return res.status(401).send('No token found');
+  }
+
+  try {
+    // Verifica el token JWT
+    const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY);
+    
+    // Envía la información del usuario si es válido
+    res.status(200).send({ user: decoded });
+  } catch (err) {
+    console.error('Invalid token:', err);
+    res.status(401).send('Unauthorized');
   }
 });
 
@@ -293,6 +319,77 @@ app.delete('/ordenes/:id', async (req, res) => {
   }
 });
 
+// Ruta para gestionar los envios
+
+// Ruta para crear un envío DHL
+
+// Nodemailer:
+// Crea el transportador de nodemailer
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     type: 'OAuth2',
+//     user: 'llurebroqueles@gmail.com',
+//     clientId: process.env.CLIENT_ID,
+//     clientSecret:  process.env.CLIENT_SECRET,
+//     refreshToken:  process.env.REFRESH_TOKEN,
+//     accessToken: accessToken.token,
+//   },
+//   tls: {
+//     rejectUnauthorized: false,
+//   },
+// });
+// Función para enviar el correo de bienvenida
+// const sendWelcomeEmail = (email) => {
+//   const mailOptions = { 
+//     from: 'llurebroqueles@gmail.com', // Remitente del correo
+//     to: email,
+//     subject: '¡Bienvenido a Broquelízate!',
+//     html: `
+//       <div style="font-family: Arial, sans-serif; color: #333;">
+        
+//         <!-- Logo -->
+//         <div style="text-align: center; margin-bottom: 20px;">
+//           <img src="https://firebasestorage.googleapis.com/v0/b/broquelizate-8d060.appspot.com/o/Assets%2FLogos%2Flogo%20contorno%20con%20negro.svg?alt=media&token=6d5a8986-f391-4d0c-ac9e-ef4aafb431df" alt="Broquelízate" style="width: 150px;">
+//         </div>
+
+//         <h1 style="color: #e7a314; text-align: center;">¡Bienvenido a Broquelízate!</h1>
+        
+//         <p>Hola,</p>
+        
+//         <p>Gracias por unirte a <strong>Broquelízate</strong>. Nos hace muy felices darte la bienvenida a nuestra comunidad de amantes de la joyería y el estilo único. Aquí encontrarás piezas exclusivas y el mejor servicio de perforaciones para expresarte con autenticidad y confianza.</p>
+        
+//         <h3 style="color: #e7a314;">¿Qué encontrarás en Broquelízate?</h3>
+//         <ul>
+//           <li><strong>Joyería Exclusiva:</strong> Una colección única de aretes, piercings y mucho más.</li>
+//           <li><strong>Servicio Profesional de Perforaciones:</strong> Atención segura y personalizada para que te sientas increíble.</li>
+//           <li><strong>Atención al Cliente:</strong> Estamos aquí para resolver todas tus dudas.</li>
+//         </ul>
+        
+//         <p>Para cualquier consulta o asistencia, no dudes en contactarnos. Estamos aquí para ayudarte en cada paso y hacer que tu experiencia en Broquelízate sea inigualable.</p>
+        
+//         <p>¡Gracias por confiar en nosotros!</p>
+        
+//         <p>Con cariño,<br>El equipo de Broquelízate</p>
+        
+//         <footer style="margin-top: 20px; font-size: 12px; color: #888;">
+//           <p>Broquelízate | Joyería y Perforaciones</p>
+//           <p>Si tienes alguna consulta, responde a este correo o visita nuestra página web.</p>
+//         </footer>
+//       </div>
+//     `,
+// };
+
+
+//   // Enviar el correo
+//   transporter.sendMail(mailOptions, (error, info) => {
+//     if (error) {
+//       console.error('Error al enviar el correo:', error);
+//     } else {
+//       console.log('Correo enviado:', info.response);
+//     }
+//   });
+// };
 
 
 
