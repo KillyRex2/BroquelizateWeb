@@ -1,7 +1,8 @@
 ---
 import Header from '../components/Header';
 import Footer from '../components/Footer.astro';
-import Checkout from '../components/Checkout/Checkout.jsx';
+// import Checkout from '../components/Checkout/Checkout.jsx';
+import Checkout from '../components/Checkout/CheckoutWrapper.jsx';
 
 const { title } = Astro.props;
 ---
@@ -18,7 +19,7 @@ const { title } = Astro.props;
 </head>
 <body class="flex flex-col min-h-screen bg-black-900">
   <Header client:load/>
-  <Checkout />
+  <Checkout client:only/>
   <main class="flex-grow">
   
   

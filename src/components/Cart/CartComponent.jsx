@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Cart from '../Cart/Cart.jsx';
-import Productos from '../Products/Products.jsx';
+import Products from '../Products/Products.jsx';
+
 
 const CartComponent = () => {
   const [cartCount, setCartCount] = useState(0);
@@ -27,7 +28,7 @@ const CartComponent = () => {
   return (
     <div>
       <Cart cartCount={cartCount} selectedProducts={selectedProducts} />
-      <Productos onAddProduct={handleAddProduct} />
+      <Products onAddProduct={handleAddProduct} />
     </div>
   );
 };

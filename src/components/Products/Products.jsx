@@ -13,7 +13,7 @@ const Productos = ({ cartCount, setCartCount }) => {
   const [lastFetchedCategory, setLastFetchedCategory] = useState(null);
   const [quantities, setQuantities] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate(); // Asegúrate de inicializar `navigate` si aún no lo has hecho
+  const navigate = useNavigate(); 
 
 
   const handleIncrement = (productId) => {
@@ -42,7 +42,6 @@ const Productos = ({ cartCount, setCartCount }) => {
   };
 
   const handleCheckout = async () => {
-    
     
     try {
       // Realiza la solicitud al endpoint de verificación de autenticación
@@ -150,21 +149,25 @@ const Productos = ({ cartCount, setCartCount }) => {
     }
   }
 
+// Verifica que savedCart tenga productos antes de establecerlo en selectedProducts
+useEffect(() => {
+  const savedCart = JSON.parse(localStorage.getItem('cart'));
+  const savedQuantities = JSON.parse(localStorage.getItem('quantities'));
+  if (savedCart && savedCart.length > 0) setSelectedProducts(savedCart);
+  if (savedQuantities) setQuantities(savedQuantities);
+}, []);
+
+// Verifica el almacenamiento en localStorage cada vez que se actualicen los productos seleccionados y las cantidades
+useEffect(() => {
+  localStorage.setItem('cart', JSON.stringify(selectedProducts));
+  localStorage.setItem('quantities', JSON.stringify(quantities));
+}, [selectedProducts, quantities]);
+
   useEffect(() => {
     fetchFilteredProducts(categoriaSeleccionada);
   }, [categoriaSeleccionada]);
 
-  useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem('cart'));
-    const savedQuantities = JSON.parse(localStorage.getItem('quantities'));
-    if (savedCart) setSelectedProducts(savedCart);
-    if (savedQuantities) setQuantities(savedQuantities);
-  }, []);
-  
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(selectedProducts));
-    localStorage.setItem('quantities', JSON.stringify(quantities));
-  }, [selectedProducts, quantities]);
+
 
   useEffect(() => {
     if (searchTerm === '') {
@@ -177,6 +180,9 @@ const Productos = ({ cartCount, setCartCount }) => {
       );
     }
   }, [searchTerm, productos]);
+
+
+  
 
   return (
     <div>
