@@ -94,8 +94,14 @@ const Productos = ({ cartCount, setCartCount }) => {
   
         // Redirigir a la página de checkout
         navigate('/checkout', {
-          state: { selectedProducts, total }, // Pasamos los productos seleccionados y el total
-        });
+          state: { 
+              selectedProducts: selectedProducts.map(product => ({
+                  ...product,
+                  quantity: quantities[product._id] || 1, // Incluye las cantidades
+              })),
+              total, // Incluye el total
+          },
+      });
       } else {
         console.error('Error al crear la orden');
       }
@@ -104,41 +110,41 @@ const Productos = ({ cartCount, setCartCount }) => {
     }
   };
 
-  const handleSelection = (producto) => {
-    const isProductSelected = selectedProducts.some((p) => p._id === producto._id);
-  
-    if (isProductSelected) {
-      setSelectedProducts((prev) => prev.filter((p) => p._id !== producto._id));
-      setQuantities((prev) => {
-        const newQuantities = { ...prev };
-        delete newQuantities[producto._id];
-        return newQuantities;
-      });
-      setCartCount((prev) => Math.max(0, prev - 1));
-    } else {
-      setSelectedProducts((prev) => [...prev, producto]);
-      setQuantities((prev) => ({ ...prev, [producto._id]: 1 }));
-      setCartCount((prev) => prev + 1);
-    }
-  };
-  
-
-
   // const handleSelection = (producto) => {
   //   const isProductSelected = selectedProducts.some((p) => p._id === producto._id);
+  
   //   if (isProductSelected) {
-  //     setSelectedProducts(selectedProducts.filter((p) => p._id !== producto._id));
-  //     setCartCount - 1;
+  //     setSelectedProducts((prev) => prev.filter((p) => p._id !== producto._id));
   //     setQuantities((prev) => {
   //       const newQuantities = { ...prev };
   //       delete newQuantities[producto._id];
   //       return newQuantities;
   //     });
+  //     setCartCount((prev) => Math.max(0, prev - 1));
   //   } else {
-  //     setSelectedProducts([...selectedProducts, producto]);
-  //     setCartCount + 1;
+  //     setSelectedProducts((prev) => [...prev, producto]);
+  //     setQuantities((prev) => ({ ...prev, [producto._id]: 1 }));
+  //     setCartCount((prev) => prev + 1);
   //   }
   // };
+  
+
+
+  const handleSelection = (producto) => {
+    const isProductSelected = selectedProducts.some((p) => p._id === producto._id);
+    if (isProductSelected) {
+      setSelectedProducts(selectedProducts.filter((p) => p._id !== producto._id));
+      setCartCount - 1;
+      setQuantities((prev) => {
+        const newQuantities = { ...prev };
+        delete newQuantities[producto._id];
+        return newQuantities;
+      });
+    } else {
+      setSelectedProducts([...selectedProducts, producto]);
+      setCartCount + 1;
+    }
+  };
 
   const vaciarCarrito = () => {
     setSelectedProducts([]);
