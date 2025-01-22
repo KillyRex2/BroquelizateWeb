@@ -339,6 +339,7 @@ app.delete('/ordenes/:id', async (req, res) => {
 //     rejectUnauthorized: false,
 //   },
 // });
+
 // Función para enviar el correo de bienvenida
 // const sendWelcomeEmail = (email) => {
 //   const mailOptions = { 

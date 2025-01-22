@@ -12,7 +12,7 @@ const Cart = ({ selectedProducts, setIsModalOpen }) => {
 
   // Función para actualizar el localStorage y el contador
   const updateCart = (products) => {
-    localStorage.setItem('cart', JSON.stringify(products));
+    //localStorage.setItem('cart', JSON.stringify(products));
     setCartCount(products.length);
   };
 

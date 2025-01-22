@@ -104,29 +104,47 @@ const Productos = ({ cartCount, setCartCount }) => {
     }
   };
 
-
-
-
   const handleSelection = (producto) => {
     const isProductSelected = selectedProducts.some((p) => p._id === producto._id);
+  
     if (isProductSelected) {
-      setSelectedProducts(selectedProducts.filter((p) => p._id !== producto._id));
-      setCartCount - 1;
+      setSelectedProducts((prev) => prev.filter((p) => p._id !== producto._id));
       setQuantities((prev) => {
         const newQuantities = { ...prev };
         delete newQuantities[producto._id];
         return newQuantities;
       });
+      setCartCount((prev) => Math.max(0, prev - 1));
     } else {
-      setSelectedProducts([...selectedProducts, producto]);
-      setCartCount + 1;
+      setSelectedProducts((prev) => [...prev, producto]);
+      setQuantities((prev) => ({ ...prev, [producto._id]: 1 }));
+      setCartCount((prev) => prev + 1);
     }
   };
+  
+
+
+  // const handleSelection = (producto) => {
+  //   const isProductSelected = selectedProducts.some((p) => p._id === producto._id);
+  //   if (isProductSelected) {
+  //     setSelectedProducts(selectedProducts.filter((p) => p._id !== producto._id));
+  //     setCartCount - 1;
+  //     setQuantities((prev) => {
+  //       const newQuantities = { ...prev };
+  //       delete newQuantities[producto._id];
+  //       return newQuantities;
+  //     });
+  //   } else {
+  //     setSelectedProducts([...selectedProducts, producto]);
+  //     setCartCount + 1;
+  //   }
+  // };
 
   const vaciarCarrito = () => {
     setSelectedProducts([]);
     setCartCount=0;
     setQuantities({});
+    localStorage.removeItem('cart');
   };
 
   async function fetchFilteredProducts(categoria) {
@@ -149,40 +167,74 @@ const Productos = ({ cartCount, setCartCount }) => {
     }
   }
 
-// Verifica que savedCart tenga productos antes de establecerlo en selectedProducts
-useEffect(() => {
-  const savedCart = JSON.parse(localStorage.getItem('cart'));
-  const savedQuantities = JSON.parse(localStorage.getItem('quantities'));
-  if (savedCart && savedCart.length > 0) setSelectedProducts(savedCart);
-  if (savedQuantities) setQuantities(savedQuantities);
-}, []);
-
-// Verifica el almacenamiento en localStorage cada vez que se actualicen los productos seleccionados y las cantidades
-useEffect(() => {
-  localStorage.setItem('cart', JSON.stringify(selectedProducts));
-  localStorage.setItem('quantities', JSON.stringify(quantities));
-}, [selectedProducts, quantities]);
-
   useEffect(() => {
-    fetchFilteredProducts(categoriaSeleccionada);
-  }, [categoriaSeleccionada]);
-
-
-
-  useEffect(() => {
-    if (searchTerm === '') {
-      setFilteredProductos(productos);
-    } else {
-      setFilteredProductos(
-        productos.filter(producto =>
-          producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
-    }
-  }, [searchTerm, productos]);
-
-
+    // Cargar los datos del carrito desde localStorage al inicializar el componente
+    const savedCart = JSON.parse(localStorage.getItem('cart'));
+    const savedQuantities = JSON.parse(localStorage.getItem('quantities'));
   
+    if (savedCart && Array.isArray(savedCart)) {
+      setSelectedProducts(savedCart);
+    }
+  
+    if (savedQuantities && typeof savedQuantities === 'object') {
+      setQuantities(savedQuantities);
+    }
+  }, []);
+  
+  useEffect(() => {
+    // Guardar los datos del carrito en localStorage cuando cambien
+    if (selectedProducts.length > 0) {
+      localStorage.setItem('cart', JSON.stringify(selectedProducts));
+    }
+  
+    if (Object.keys(quantities).length > 0) {
+      localStorage.setItem('quantities', JSON.stringify(quantities));
+    }
+  }, [selectedProducts, quantities]);
+  
+
+// useEffect(() => {
+//   const savedCart = JSON.parse(localStorage.getItem('cart'));
+//   const savedQuantities = JSON.parse(localStorage.getItem('quantities'));
+//   console.log('Loaded from localStorage:', savedCart, savedQuantities);
+//   if (savedCart && Array.isArray(savedCart) && savedCart.length > 0) {
+//     setSelectedProducts(savedCart);
+//   } else {
+//     console.log('No valid cart found in localStorage');
+//   }
+//   if (savedQuantities && typeof savedQuantities === 'object') {
+//     setQuantities(savedQuantities);
+//   } else {
+//     console.log('No valid quantities found in localStorage');
+//   }
+// }, []);
+
+// useEffect(() => {
+//   console.log('Saving to localStorage:', selectedProducts, quantities);
+//   if (selectedProducts.length > 0) {
+//     localStorage.setItem('cart', JSON.stringify(selectedProducts));
+//   }
+//   if (Object.keys(quantities).length > 0) {
+//     localStorage.setItem('quantities', JSON.stringify(quantities));
+//   }
+// }, [selectedProducts, quantities]);
+
+useEffect(() => {
+  fetchFilteredProducts(categoriaSeleccionada);
+}, [categoriaSeleccionada]);
+
+useEffect(() => {
+  if (searchTerm === '') {
+    setFilteredProductos(productos);
+  } else {
+    setFilteredProductos(
+      productos.filter(producto =>
+        producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }
+}, [searchTerm, productos]);
+
 
   return (
     <div>
@@ -334,6 +386,12 @@ useEffect(() => {
 
       <h2 className="text-lg font-semibold text-gray-900 mb-4">Productos seleccionados</h2>
 
+
+      {/* Mostrar mensaje si el carrito está vacío */}
+      {selectedProducts.length === 0 && (
+        <p className="text-red-600 mb-4">El carrito está vacío.</p>
+      )}
+
       <div className="max-h-64 overflow-y-auto">
         <ul className="space-y-4">
           {selectedProducts.map((producto) => (
@@ -417,8 +475,13 @@ useEffect(() => {
             Vaciar carrito
           </button>
           <button
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+              className={`${
+                selectedProducts.length === 0
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-700"
+              } text-white px-4 py-2 rounded-lg`}
             onClick={handleCheckout}
+            disabled={selectedProducts.length === 0}
           >
           Checkout
           </button>
